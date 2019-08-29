@@ -10,14 +10,11 @@ package com.qzi.cms.app.controller;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import com.qzi.cms.common.po.UseResidentPo;
 import com.qzi.cms.common.service.RedisService;
 import com.qzi.cms.common.util.ConfUtils;
 import com.qzi.cms.common.util.CryptUtils;
 import com.qzi.cms.common.vo.SysUserVo;
-import com.qzi.cms.common.vo.UpdatePwVo;
 import com.qzi.cms.server.mapper.SysUserMapper;
-import com.qzi.cms.server.service.app.RegisterService;
 import com.qzi.cms.server.service.common.CommonService;
 import com.qzi.cms.server.service.web.UserService;
 import org.apache.commons.lang3.StringUtils;

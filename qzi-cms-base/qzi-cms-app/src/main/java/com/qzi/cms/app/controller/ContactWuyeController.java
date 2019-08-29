@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.qzi.cms.common.enums.RespCodeEnum;
 import com.qzi.cms.common.resp.RespBody;
 import com.qzi.cms.common.util.LogUtils;
-import com.qzi.cms.server.service.app.ContactWuyeService;
 
 /**
  * 联系物业控制器

@@ -12,9 +12,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.qzi.cms.common.enums.RespCodeEnum;
 import com.qzi.cms.common.enums.StateEnum;
-import com.qzi.cms.common.resp.RespBody;
 import com.qzi.cms.common.util.YBBeanUtils;
 import com.qzi.cms.common.vo.SysUserVo;
 import com.qzi.cms.server.mapper.SysUserMapper;
@@ -32,7 +30,6 @@ import com.qzi.cms.common.vo.LoginVo;
 import com.qzi.cms.common.vo.UseResidentVo;
 import com.qzi.cms.server.mapper.UseResidentMapper;
 import com.qzi.cms.server.service.app.LoginService;
-import com.qzi.cms.server.service.web.NewResidentService;
 
 /**
  * 登录业务层实现类
@@ -48,8 +45,7 @@ public class LoginServiceImpl implements LoginService {
 	private RedisService redisService;
 	@Resource
 	private ConfUtils confUtils;
-	@Resource
-	private NewResidentService newResidentService;
+
 	@Resource
 	private UseCommunityResidentMapper useCommunityResidentMapper;
 	@Resource
@@ -223,7 +219,7 @@ public class LoginServiceImpl implements LoginService {
 			if(!smsCode.equals(residentVo.getSmsCode())){
 				throw new CommException("手机验证码输入有误");
 			}
-			newResidentService.update(residentVo);
+			//newResidentService.update(residentVo);
 		}
 
 	@Override

@@ -10,7 +10,7 @@ public class HomeUserCommunityVo {
     private Integer csCode;  //厂商代码
     private  String areaCode; //项目代码
     private String community; //项目代码Id
-    private List<UseEquipmentVo> equList;  //设备列表
+
     private String communityName; //小区名字
     private String roomId; //房间Id
     private  String  userName; //用户名
@@ -119,13 +119,6 @@ public class HomeUserCommunityVo {
         this.communityName = communityName;
     }
 
-    public List<UseEquipmentVo> getEquList() {
-        return equList;
-    }
-
-    public void setEquList(List<UseEquipmentVo> equList) {
-        this.equList = equList;
-    }
 
     public Integer getCsCode() {
         return csCode;

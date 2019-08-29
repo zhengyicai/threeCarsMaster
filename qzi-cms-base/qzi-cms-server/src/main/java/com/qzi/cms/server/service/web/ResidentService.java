@@ -12,9 +12,7 @@ import java.util.List;
 import com.qzi.cms.common.resp.Paging;
 import com.qzi.cms.common.vo.OptionVo;
 import com.qzi.cms.common.vo.TreeVo;
-import com.qzi.cms.common.vo.UseResidentRoomVo;
 import com.qzi.cms.common.vo.UseResidentVo;
-import com.qzi.cms.common.vo.UseRoomVo;
 
 /**
  * 住户业务层接口
@@ -96,33 +94,7 @@ public interface ResidentService {
 	 */
 	public List<OptionVo> findRooms(String buildingId, String unitNo);
 
-	/**
-	 * 查找房间集合
-	 * @param residentId 住户编号
-	 * @param communityId 小区编号
-	 * @return 住户关联房间信息集合
-	 */
-	public List<UseRoomVo> findResidentRooms(String residentId,String communityId);
 
-	/**
-	 * 住房房间是否存在
-	 * @param residentRoomVo 住户房间
-	 * @return true|false
-	 */
-	public boolean existsRelation(UseResidentRoomVo residentRoomVo);
-
-	/**
-	 * 保存住户房间关系
-	 * @param residentRoomVo 住户房间
-	 * @throws Exception 
-	 */
-	public void addRelation(UseResidentRoomVo residentRoomVo) throws Exception;
-
-	/**
-	 * 删除住户房间关系
-	 * @param residentRoomVo 住户房间
-	 */
-	public void delRelation(UseResidentRoomVo residentRoomVo) throws Exception;
 
 	/**
 	 * 删除住户信息
@@ -148,12 +120,6 @@ public interface ResidentService {
 	 * 修改注册时间
 	 */
 	public void updateCreateTime(String residentId) throws  Exception;
-	/**
-	 * 是否户主
-	 * @param residentRoomVo 住户
-	 * @return
-	 */
-	public boolean existsOwner(UseResidentRoomVo residentRoomVo);
 
 	public boolean exist(String mobile);
 

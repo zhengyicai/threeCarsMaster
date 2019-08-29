@@ -7,12 +7,8 @@
 */
 package com.qzi.cms.server.service.app;
 
-import java.lang.reflect.Parameter;
-import java.rmi.server.ExportException;
 import java.util.List;
 
-import com.qzi.cms.common.po.UseBuildingPo;
-import com.qzi.cms.common.resp.Paging;
 import com.qzi.cms.common.vo.*;
 
 /**
@@ -21,7 +17,7 @@ import com.qzi.cms.common.vo.*;
  * @version v1.0
  * @date 2017年7月30日
  */
-public interface HomeService {
+interface omeService {
 
 	/**
 	 * 查找轮播图
@@ -29,19 +25,7 @@ public interface HomeService {
 	 */
 	public List<String> findBanners();
 
-	/**
-	 * 查询最新公告
-	 * @return
-	 * @throws Exception 
-	 */
-	public UseNoticeVo findTopNotice() throws Exception;
 
-	/**
-	 * 查询最新消息
-	 * @return
-	 * @throws Exception 
-	 */
-	public UseMessageVo findTopMsg() throws Exception;
 
 	/**
 	 * 查询最新消息总条数

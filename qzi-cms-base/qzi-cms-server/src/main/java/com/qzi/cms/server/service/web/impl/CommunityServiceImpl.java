@@ -18,16 +18,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.stereotype.Service;
 
-import com.qzi.cms.common.enums.StateEnum;
-import com.qzi.cms.common.po.UseBuildingPo;
 import com.qzi.cms.common.po.UseCommunityPo;
 import com.qzi.cms.common.po.UseCommunityUserPo;
 import com.qzi.cms.common.resp.Paging;
 import com.qzi.cms.common.util.ToolUtils;
 import com.qzi.cms.common.util.YBBeanUtils;
-import com.qzi.cms.server.mapper.SysCityMapper;
 import com.qzi.cms.server.mapper.SysUserMapper;
-import com.qzi.cms.server.mapper.UseBuildingMapper;
 import com.qzi.cms.server.mapper.UseCommunityMapper;
 import com.qzi.cms.server.mapper.UseCommunityUserMapper;
 import com.qzi.cms.server.service.web.CommunityService;
@@ -43,13 +39,9 @@ public class CommunityServiceImpl implements CommunityService {
 	@Resource
 	private UseCommunityMapper communityMapper;
 	@Resource
-	private SysCityMapper cityMapper;
-	@Resource
 	private SysUserMapper userMapper;
 	@Resource
 	private UseCommunityUserMapper communityUserMapper;
-	@Resource
-	private UseBuildingMapper buildMapper;
 	@Resource
 	private CommonService commonService;
 
@@ -132,7 +124,9 @@ public class CommunityServiceImpl implements CommunityService {
 		UseCommunityPo raPo = YBBeanUtils.copyProperties(communityVo, UseCommunityPo.class);
 		communityMapper.updateByPrimaryKey(raPo);
 	}
-	
+
+
+
 	/**
 	 * 获取小区编号
 	 * @return 6位字符编号
@@ -146,10 +140,6 @@ public class CommunityServiceImpl implements CommunityService {
 		return String.format("%06d", tno);
 	}
 
-	@Override
-	public List<SysCityVo> findCitys(String parentCode) {
-		return cityMapper.findCitys(parentCode);
-	}
 
 	@Override
 	public List<CommunityAdminVo> findAdmin(String communityId) {

@@ -6,16 +6,13 @@ package com.qzi.cms.app.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPObject;
 import com.qzi.cms.common.enums.RespCodeEnum;
 import com.qzi.cms.common.resp.RespBody;
 import com.qzi.cms.common.util.HttpClientManager;
 
 
 import com.qzi.cms.common.util.LogUtils;
-import com.qzi.cms.common.vo.UseCommunityVo;
 import com.qzi.cms.server.mapper.UseCommunityMapper;
-import com.qzi.cms.server.mapper.UseEquipmentMapper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +21,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
-import java.util.List;
 import java.util.Map;
 
 

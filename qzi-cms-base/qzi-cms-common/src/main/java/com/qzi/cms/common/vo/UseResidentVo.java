@@ -7,9 +7,6 @@
 */
 package com.qzi.cms.common.vo;
 
-import com.qzi.cms.common.po.UseResidentCardPo;
-
-import javax.xml.crypto.Data;
 import java.util.Date;
 import java.util.List;
 

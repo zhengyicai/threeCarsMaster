@@ -9,17 +9,13 @@ package com.qzi.cms.web.controller;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.tools.Tool;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.qzi.cms.common.po.*;
 import com.qzi.cms.common.util.ToolUtils;
-import com.qzi.cms.common.vo.UseResidentVo;
+import com.qzi.cms.common.vo.UpdatePwVo;
 import com.qzi.cms.common.vo.UseUserCardVo;
 import com.qzi.cms.server.mapper.*;
 import com.qzi.cms.server.service.web.CommunityService;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,13 +30,7 @@ import com.qzi.cms.common.util.ConfUtils;
 import com.qzi.cms.common.util.CryptUtils;
 import com.qzi.cms.common.util.LogUtils;
 import com.qzi.cms.common.vo.SysUserVo;
-import com.qzi.cms.common.vo.UpdatePwVo;
 import com.qzi.cms.server.service.web.UserService;
-
-import java.io.IOException;
-import java.net.*;
-import java.util.Date;
-import java.util.List;
 
 /**
  * 用户控制器
@@ -65,31 +55,8 @@ public class UserController {
 	@Resource
 	private UseCommunityUserMapper useCommunityUserMapper;
 
-	@Resource
-	private UseUserCardMapper useUserCardMapper;
 
 
-	@Resource
-	private UseUserCardEquipmentMapper useUserCardEquipmentMapper;
-
-
-	@Resource
-	private UseResidentEquipmentMapper useResidentEquipmentMapper;
-
-
-	@Resource
-	private UseEquipmentPortMapper useEquipmentPortMapper;
-
-	@Resource
-	private  UseEquipmentNowStateMapper useEquipmentNowStateMapper;
-
-
-	@Resource
-	private  UseResidentCardMapper useResidentCardMapper;
-
-
-	@Resource
-	private UseResidentUnlockRecordMapper useResidentUnlockRecordMapper;
 
 
 
@@ -431,12 +398,7 @@ public class UserController {
 	public RespBody cardFindAll(Paging paging,String userId){
 		RespBody respBody = new RespBody();
 		try {
-			//保存返回数据
-			RowBounds rwoBounds = new RowBounds(paging.getPageNumber(),paging.getPageSize());
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有用户信息数据成功", useUserCardMapper.findUserId(rwoBounds,userId));
-			//保存分页对象
-			paging.setTotalCount(userService.findCount());
-			respBody.setPage(paging);
+
 		} catch (Exception ex) {
 			respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有用户信息数据失败");
 			LogUtils.error("查找所有用户信息数据失败！",ex);
@@ -453,58 +415,12 @@ public class UserController {
 	public RespBody addUserCard(@RequestBody UseUserCardVo useUserCardVo){
 		RespBody respBody = new RespBody();
 
-		if(useUserCardVo.getChoId().length>0){
 
-			UseUserCardPo  po = new UseUserCardPo();
-			String id = ToolUtils.getUUID();
-			po.setId(id);
-			po.setCommunityId(useUserCardVo.getCommunityId());
-			po.setCreateTime(new Date());
-			po.setState("10");
-			po.setUserId(useUserCardVo.getUserId());
-			po.setCardName(useUserCardVo.getCardName());
-			po.setCardNo(useUserCardVo.getCardNo());
-			useUserCardMapper.insert(po);
-			UseUserCardEquipmentPo useUserCardEquipmentPo = new UseUserCardEquipmentPo();
-			for(int i  = 0;i<useUserCardVo.getChoId().length;i++){
-				useUserCardEquipmentPo.setId(ToolUtils.getUUID());
-				useUserCardEquipmentPo.setCommunityId(useUserCardVo.getCommunityId());
-				useUserCardEquipmentPo.setCreateTime(new Date());
-				useUserCardEquipmentPo.setState("20");
-				useUserCardEquipmentPo.setUserCardId(id);
-				useUserCardEquipmentPo.setEquipmentId(useUserCardVo.getChoId()[i]);
-				useUserCardEquipmentMapper.insert(useUserCardEquipmentPo);
-			}
-
-		}
 		return respBody;
 	}
 
 
-	/**
-	 * 添加用户设备
-	 * @param
-	 * @return
-	 */
-	@PostMapping("/addResidentEquipment")
-	public RespBody addResidentEquipment(@RequestBody UseUserCardVo useUserCardVo){
-		RespBody respBody = new RespBody();
 
-		if(useUserCardVo.getChoId().length>0){
-
-			UseResidentEquipmentPo useResidentEquipmentPo = new UseResidentEquipmentPo();
-			for(int i  = 0;i<useUserCardVo.getChoId().length;i++){
-				useResidentEquipmentPo.setId(ToolUtils.getUUID());
-				useResidentEquipmentPo.setCommunityId(useUserCardVo.getCommunityId());
-				useResidentEquipmentPo.setState("10");
-				useResidentEquipmentPo.setResidentId(useUserCardVo.getId());
-				useResidentEquipmentPo.setEquipmentId(useUserCardVo.getChoId()[i]);
-				useResidentEquipmentMapper.insert(useResidentEquipmentPo);
-			}
-
-		}
-		return respBody;
-	}
 
 
 	/**
@@ -517,7 +433,7 @@ public class UserController {
 		RespBody respBody = new RespBody();
 		try {
 			//保存返回数据
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有管理员卡号数据成功", useUserCardEquipmentMapper.findRoomCard(cardId));
+
 		} catch (Exception ex) {
 			respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有管理员卡号数据失败");
 			LogUtils.error("查找所有用户信息数据失败！",ex);
@@ -525,23 +441,6 @@ public class UserController {
 		return respBody;
 	}
 
-	/**
-	 * 查看用户设备列表
-	 * @param
-	 * @return
-	 */
-	@GetMapping("/residentEquipmentFindAll")
-	public RespBody residentEquipmentFindAll(String residentId,String communityId){
-		RespBody respBody = new RespBody();
-		try {
-			//保存返回数据
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有管理员卡号数据成功", useResidentEquipmentMapper.findResident(residentId,communityId));
-		} catch (Exception ex) {
-			respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有管理员卡号数据失败");
-			LogUtils.error("查找所有用户信息数据失败！",ex);
-		}
-		return respBody;
-	}
 
 
 
@@ -562,22 +461,7 @@ public class UserController {
 		if(useUserCardVo.getChoId().length>0){
 
 
-			if(useUserCardEquipmentMapper.selectCardId(useUserCardVo.getId())>0){
-				respBody.add(RespCodeEnum.ERROR.getCode(), "该卡号应该绑定过设备，请先解绑");
-				return respBody;
-			}
 
-			useUserCardEquipmentMapper.deleteCardId(useUserCardVo.getId());
-			UseUserCardEquipmentPo useUserCardEquipmentPo = new UseUserCardEquipmentPo();
-			for(int i  = 0;i<useUserCardVo.getChoId().length;i++){
-				useUserCardEquipmentPo.setId(ToolUtils.getUUID());
-				useUserCardEquipmentPo.setCommunityId(useUserCardVo.getCommunityId());
-				useUserCardEquipmentPo.setCreateTime(new Date());
-				useUserCardEquipmentPo.setState("20");
-				useUserCardEquipmentPo.setUserCardId(useUserCardVo.getId());
-				useUserCardEquipmentPo.setEquipmentId(useUserCardVo.getChoId()[i]);
-				useUserCardEquipmentMapper.insert(useUserCardEquipmentPo);
-			}
 
 		}
 		return respBody;
@@ -594,29 +478,7 @@ public class UserController {
 		RespBody respBody = new RespBody();
 
 
-		useResidentEquipmentMapper.deleteResident(useUserCardVo.getId(),useUserCardVo.getCommunityId());
-		if(useUserCardVo.getChoId().length>0){
 
-//
-//			if(useUserCardEquipmentMapper.selectCardId(useUserCardVo.getId())>0){
-//				respBody.add(RespCodeEnum.ERROR.getCode(), "该卡号应该绑定过设备，请先解绑");
-//				return respBody;
-//			}
-
-			//useUserCardEquipmentMapper.deleteCardId(useUserCardVo.getId());
-
-
-			UseResidentEquipmentPo useResidentEquipmentPo = new UseResidentEquipmentPo();
-			for(int i  = 0;i<useUserCardVo.getChoId().length;i++){
-				useResidentEquipmentPo.setId(ToolUtils.getUUID());
-				useResidentEquipmentPo.setCommunityId(useUserCardVo.getCommunityId());
-				useResidentEquipmentPo.setState("10");
-				useResidentEquipmentPo.setResidentId(useUserCardVo.getId());
-				useResidentEquipmentPo.setEquipmentId(useUserCardVo.getChoId()[i]);
-				useResidentEquipmentMapper.insert(useResidentEquipmentPo);
-			}
-
-		}
 		return respBody;
 	}
 
@@ -630,13 +492,7 @@ public class UserController {
 	public RespBody deleteUserCard(@RequestBody UseUserCardVo useUserCardVo){
 		RespBody respBody = new RespBody();
 
-		if(useUserCardEquipmentMapper.selectCardId(useUserCardVo.getId())>0){
-			respBody.add(RespCodeEnum.ERROR.getCode(), "该卡号应该绑定过设备，请先解绑");
-			return respBody;
-		}
-		useUserCardMapper.deleteId(useUserCardVo.getId());
-			//useUserCardEquipmentMapper.deleteCardId(useUserCardVo.getId());
-		respBody.add(RespCodeEnum.SUCCESS.getCode(), "删除成功");
+
 
 		return respBody;
 	}

@@ -47,7 +47,7 @@ public interface UseResidentMapper  extends BaseMapper<UseResidentPo>{
 	/**
 	 * @param rwoBounds
 	 * @param criteria
-	 * @param id
+	 * @param
 	 * @return
 	 */
 	public List<UseResidentVo> residentList(RowBounds rwoBounds,@Param("criteria") String criteria);
@@ -66,10 +66,7 @@ public interface UseResidentMapper  extends BaseMapper<UseResidentPo>{
 	 * @param id
 	 * @return
 	 */
-	public List<UseResidentRoomVo> authList(RowBounds rwoBounds, @Param("criteria") String criteria, @Param("communityId") String communityId);
 
-
-	public List<UseResidentRoomVo> authListDetail(@Param("residentId") String residentId);
 
 
 	/**
@@ -109,7 +106,7 @@ public interface UseResidentMapper  extends BaseMapper<UseResidentPo>{
 
 	/**
 	 * @param criteria
-	 * @param id
+	 * @param
 	 * @return
 	 */
 	public long authCount(@Param("criteria") String criteria,@Param("communityId") String communityId);
@@ -117,7 +114,7 @@ public interface UseResidentMapper  extends BaseMapper<UseResidentPo>{
 
 	/**
 	 * @param mobile
-	 * @param communityId
+	 * @param
 	 * @return
 	 */
 	@Select("select count(1)>0 from use_resident where mobile=#{mobile}")
@@ -162,12 +159,6 @@ public interface UseResidentMapper  extends BaseMapper<UseResidentPo>{
 	public long findCountByCriteria(@Param("criteria") String criteria);
 
 
-	/**
-	 * @param messageVo
-	 * @return
-	 */
-	public List<String> findResident(@Param("vo") UseMessageVo messageVo);
-
 
 	/**
 	 * @param mobile
@@ -192,22 +183,7 @@ public interface UseResidentMapper  extends BaseMapper<UseResidentPo>{
 	public List<CallVo> findCall(@Param("roomId") String roomId);
 
 
-	/**
-	 * 根据手机号查询对应的房间信息
-	 * @param mobile 手机号
-	 * @return 房间集合
-	 */
-	@Select("SELECT uro.* from use_resident ure,use_room uro,use_resident_room urr WHERE ure.id=urr.residentId and urr.roomId=uro.id and ure.mobile=#{mobile}")
-	public List<UseRoomVo> findRooms(@Param("mobile") String mobile);
 
-
-	/**
-	 * 根据房间编号获取房间信息
-	 * @param roomId
-	 * @return
-	 */
-	@Select("select * from use_room where roomNo=#{roomId}")
-	public UseRoomVo findRoomById(@Param("roomId") String roomId);
 
 	@Update("update use_resident set createTime = now() where id= #{residentId}")
 	public void updateCreateTime(@Param("residentId") String residentId);

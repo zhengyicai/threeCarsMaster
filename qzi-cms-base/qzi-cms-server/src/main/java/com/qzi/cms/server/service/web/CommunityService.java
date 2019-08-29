@@ -62,12 +62,7 @@ public interface CommunityService {
 	 */
 	public void update(UseCommunityVo communityVo) throws Exception;
 
-	/**
-	 * 查找中国城市
-	 * @param parentCode
-	 * @return
-	 */
-	public List<SysCityVo> findCitys(String parentCode);
+
 
 	/**
 	 * @param communityId
