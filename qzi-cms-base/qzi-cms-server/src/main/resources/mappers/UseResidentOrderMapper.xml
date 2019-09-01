@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qzi.cms.server.mapper.UseResidentOrderMapper">
+   <!-- 条件分页查询
+     private String city;
+    private String country;
+    private String town;
+
+    -->
+	<select id="findAll" resultType="ResidentOrderVo" parameterType="String">
+		select * from use_resident_order o left join use_resident_address a on o.addressId = a.id
+		<where>
+			1=1
+			<if test="model.country != null and model.country !=''">
+				and country = #{model.country}
+			</if>
+			<if test="model.city != null and model.city !=''">
+				and city = #{model.city}
+			</if>
+			<if test="model.town != null and model.town !=''">
+				and town = #{model.town}
+			</if>
+		</where>
+		order by o.createTime desc
+	</select>
+   
+	<select id="findCount" resultType="long" parameterType="String">
+		select count(1) from use_resident_order o left join use_resident_address a on o.addressId = a.id
+				<where>
+					1=1
+					<if test="model.country != null and model.country !=''">
+						and o.country = #{model.country}
+					</if>
+					<if test="model.city != null and model.city !=''">
+						and o.city = #{model.city}
+					</if>
+					<if test="model.town != null and model.town !=''">
+						and o.town = #{model.town}
+					</if>
+				</where>
+				order by o.createTime desc
+	</select>
+</mapper>

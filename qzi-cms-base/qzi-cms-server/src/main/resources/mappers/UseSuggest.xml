@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qzi.cms.server.mapper.UseSuggestMapper">
+   <!-- 条件分页查询 -->
+	<select id="findAll" resultType="UseSuggestPo" parameterType="String">
+		SELECT * from use_suggest
+		<where>
+			1=1
+			<if test="criteria != null and criteria !=''">
+				<bind name="pun" value="'%'+_parameter.criteria+'%'"/>
+				and 	mobile like #{pun} or detail like #{pun}
+			</if>
+		</where>
+		order by createTime desc
+	</select>
+   
+	<select id="findCount" resultType="long" parameterType="String">
+		SELECT count(1) from use_suggest
+		<where>
+			1=1
+			<if test="criteria != null and criteria !=''">
+				<bind name="pun" value="'%'+_parameter.criteria+'%'"/>
+				and mobile like #{pun} or detail like #{pun}
+			</if>
+		</where>
+		order by createTime desc
+	</select>
+</mapper>
