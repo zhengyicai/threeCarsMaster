@@ -123,6 +123,35 @@ public class UseCommunityVo {
 	 */
 	private String sysWorkId;
 
+	private String residentId;
+
+	private String name;
+	private String mobile;
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getResidentId() {
+		return residentId;
+	}
+
+	public void setResidentId(String residentId) {
+		this.residentId = residentId;
+	}
+
 	public String getSysWorkId() {
 		return sysWorkId;
 	}

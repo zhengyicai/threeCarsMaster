@@ -10,6 +10,7 @@ import com.qzi.cms.common.resp.Paging;
 import com.qzi.cms.common.resp.RespBody;
 import com.qzi.cms.common.util.LogUtils;
 import com.qzi.cms.common.vo.ResidentOrderVo;
+import com.qzi.cms.server.mapper.UseResidentOrderMapper;
 import com.qzi.cms.server.service.web.GoodsRecordService;
 import com.qzi.cms.server.service.web.GoodsService;
 import com.qzi.cms.server.service.web.OrderService;
@@ -34,6 +35,9 @@ public class UseResidentOrderController {
 
     @Resource
     private GoodsRecordService goodsRecordService;
+
+    @Resource
+    private UseResidentOrderMapper useResidentOrderMapper;
 
     @GetMapping("/findAll")
     public RespBody findAll(Paging paging,String country,String city,String town){
@@ -103,6 +107,20 @@ public class UseResidentOrderController {
         } catch (Exception ex) {
             respBody.add(RespCodeEnum.ERROR.getCode(), "删除订单失败");
             LogUtils.error("删除订单失败！",ex);
+        }
+        return respBody;
+    }
+
+
+    @GetMapping("/findDetail")
+    public RespBody findDetail(String orderId){
+        RespBody respBody = new RespBody();
+        try {
+            //保存返回数据
+            respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找中国城市数据成功", useResidentOrderMapper.findRecord(orderId));
+        } catch (Exception ex) {
+            respBody.add(RespCodeEnum.ERROR.getCode(), "查找中国城市数据失败");
+            LogUtils.error("查找中国城市数据失败！",ex);
         }
         return respBody;
     }

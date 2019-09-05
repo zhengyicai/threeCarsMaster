@@ -60,7 +60,20 @@ public class CommunityAreaController {
 		}
 		return respBody;
 	}
-	
+
+
+	@GetMapping("/findCitys")
+	public RespBody findCitys(String parentCode){
+		RespBody respBody = new RespBody();
+		try {
+			//保存返回数据
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找中国城市数据成功", communityService.findCitys(parentCode));
+		} catch (Exception ex) {
+			respBody.add(RespCodeEnum.ERROR.getCode(), "查找中国城市数据失败");
+			LogUtils.error("查找中国城市数据失败！",ex);
+		}
+		return respBody;
+	}
 
 	
 	

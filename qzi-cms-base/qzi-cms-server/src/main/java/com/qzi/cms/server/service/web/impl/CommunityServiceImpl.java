@@ -13,6 +13,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.qzi.cms.common.vo.*;
+import com.qzi.cms.server.mapper.SysCityMapper;
 import com.qzi.cms.server.service.common.CommonService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
@@ -45,6 +46,8 @@ public class CommunityServiceImpl implements CommunityService {
 	@Resource
 	private CommonService commonService;
 
+	@Resource
+	private SysCityMapper cityMapper;
 	@Override
 	public List<UseCommunityVo> findAll(Paging paging) throws Exception  {
 		SysUserVo userVo = commonService.findUser();
@@ -101,22 +104,28 @@ public class CommunityServiceImpl implements CommunityService {
 		sysPo.setUserId(sysUserVo.getId());
 		communityUserMapper.insert(sysPo);
 
-
-		SysUserVo userVo = commonService.findUser();
-		if(sysUserVo.getId().equals(userVo.getId())){
-
-		}else{
-			//添加当前账号关联小区的数据
-			UseCommunityUserPo sysPo1 = new UseCommunityUserPo();
-			sysPo1.setCommunityId(ucPo.getId());
-			sysPo1.setUserId(userVo.getId());
-			communityUserMapper.insert(sysPo1);
-		}
-
-
+//
+//		SysUserVo userVo = commonService.findUser();
+//		if(sysUserVo.getId().equals(userVo.getId())){
+//
+//		}else{
+//			//添加当前账号关联小区的数据
+//			UseCommunityUserPo sysPo1 = new UseCommunityUserPo();
+//			sysPo1.setCommunityId(ucPo.getId());
+//			sysPo1.setUserId(userVo.getId());
+//			communityUserMapper.insert(sysPo1);
+//		}
 
 
 
+
+
+	}
+
+
+	@Override
+	public List<SysCityVo> findCitys(String parentCode) {
+		return cityMapper.findCitys(parentCode);
 	}
 
 	@Override

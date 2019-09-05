@@ -39,9 +39,10 @@ public class ResidentController {
 	@Resource
 	private ResidentService residentService;
 
-
 	@Resource
 	private UseResidentMapper useResidentMapper;
+
+
 
 
 
@@ -101,6 +102,22 @@ public class ResidentController {
 			//保存分页对象
 			paging.setTotalCount(residentService.residentCount(criteria));
 			respBody.setPage(paging);
+		} catch (Exception ex) {
+			respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有住户数据失败");
+			LogUtils.error("查找所有住户数据失败！",ex);
+		}
+		return respBody;
+	}
+
+
+	@GetMapping("/residentType")
+	public RespBody residentType(){
+		RespBody respBody = new RespBody();
+		try {
+			//保存返回数据
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有住户数据成功", useResidentMapper.findType("20"));
+			//保存分页对象
+
 		} catch (Exception ex) {
 			respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有住户数据失败");
 			LogUtils.error("查找所有住户数据失败！",ex);

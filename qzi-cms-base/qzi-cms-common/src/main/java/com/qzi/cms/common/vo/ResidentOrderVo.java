@@ -38,6 +38,25 @@ public class ResidentOrderVo {
     private String town;
     private String detail;
 
+    private String carName;
+    private String carMobile;
+
+    public String getCarName() {
+        return carName;
+    }
+
+    public void setCarName(String carName) {
+        this.carName = carName;
+    }
+
+    public String getCarMobile() {
+        return carMobile;
+    }
+
+    public void setCarMobile(String carMobile) {
+        this.carMobile = carMobile;
+    }
+
     public String getId() {
         return id;
     }

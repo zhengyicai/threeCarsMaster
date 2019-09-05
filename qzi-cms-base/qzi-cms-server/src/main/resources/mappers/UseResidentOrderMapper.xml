@@ -9,7 +9,7 @@
 
     -->
 	<select id="findAll" resultType="ResidentOrderVo" parameterType="String">
-		select * from use_resident_order o left join use_resident_address a on o.addressId = a.id
+		select *,r.name as carName,r.mobile as carMobile from use_resident_order o left join use_resident_address a on o.addressId = a.id left join use_resident r on r.id = o.carId
 		<where>
 			1=1
 			<if test="model.country != null and model.country !=''">

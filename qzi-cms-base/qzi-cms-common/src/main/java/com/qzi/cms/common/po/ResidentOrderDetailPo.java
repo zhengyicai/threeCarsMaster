@@ -14,9 +14,9 @@ public class ResidentOrderDetailPo {
     private String id;
     private String goodsId;
     private String goodsName;
-    private String bugPrice;
+    private String buyPrice;
     private String sellPrice;
-    private String bugWeight;
+    private String buyWeight;
     private String sellWeight;
     private String orderId;
     private String state;
@@ -47,12 +47,12 @@ public class ResidentOrderDetailPo {
         this.goodsName = goodsName;
     }
 
-    public String getBugPrice() {
-        return bugPrice;
+    public String getBuyPrice() {
+        return buyPrice;
     }
 
-    public void setBugPrice(String bugPrice) {
-        this.bugPrice = bugPrice;
+    public void setBuyPrice(String bugPrice) {
+        this.buyPrice = bugPrice;
     }
 
     public String getSellPrice() {
@@ -63,12 +63,12 @@ public class ResidentOrderDetailPo {
         this.sellPrice = sellPrice;
     }
 
-    public String getBugWeight() {
-        return bugWeight;
+    public String getBuyWeight() {
+        return buyWeight;
     }
 
-    public void setBugWeight(String bugWeight) {
-        this.bugWeight = bugWeight;
+    public void setBuyWeight(String bugWeight) {
+        this.buyWeight = bugWeight;
     }
 
     public String getSellWeight() {

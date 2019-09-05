@@ -7,10 +7,7 @@
 */
 package com.qzi.cms.server.mapper;
 
-import com.qzi.cms.common.po.GoodsPo;
-import com.qzi.cms.common.po.ResidentAddressPo;
-import com.qzi.cms.common.po.ResidentOrderPo;
-import com.qzi.cms.common.po.UseCommunityPo;
+import com.qzi.cms.common.po.*;
 import com.qzi.cms.common.vo.ResidentOrderVo;
 import com.qzi.cms.server.base.BaseMapper;
 import org.apache.ibatis.annotations.Param;
@@ -40,6 +37,9 @@ public interface UseResidentOrderMapper extends BaseMapper<ResidentOrderPo>{
 	 */
 	
 	public long findCount(@Param("model") ResidentOrderVo vo);
+
+	@Select("select * from use_order_detail where orderId = #{orderId}")
+	public List<ResidentOrderDetailPo> findRecord(@Param("orderId") String orderId);
 
 
 }

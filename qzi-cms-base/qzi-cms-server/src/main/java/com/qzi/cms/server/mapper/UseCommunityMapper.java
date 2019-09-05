@@ -31,7 +31,7 @@ public interface UseCommunityMapper extends BaseMapper<UseCommunityPo>{
 	 * @param rwoBounds
 	 * @return
 	 */
-	@Select("select c.*,u.userName as userName,u.state as userStatus,u1.userName as userWorkName,u1.state as userWorkStatus from use_community c left join sys_user u on u.id = c.sysUserId  left join   sys_user u1 on u1.id =c.sysWorkId  inner join  use_community_user  ucu  where c.id = ucu.communityId and ucu.userId=#{userId} order by c.createTime desc")
+	@Select("select c.*,re.name,re.mobile, u.userName as userName,u.state as userStatus,u1.userName as userWorkName,u1.state as userWorkStatus from use_community c left join sys_user u on u.id = c.sysUserId  left join use_resident  re on c.residentId = re.id  left join   sys_user u1 on u1.id =c.sysWorkId  inner join  use_community_user  ucu  where c.id = ucu.communityId and ucu.userId=#{userId} order by c.createTime desc")
 	public List<UseCommunityVo> findAll(@Param("userId") String  userId,RowBounds rwoBounds);
 
 	/**

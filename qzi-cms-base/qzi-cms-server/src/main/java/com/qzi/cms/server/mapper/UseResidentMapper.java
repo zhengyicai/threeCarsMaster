@@ -19,6 +19,8 @@ import org.apache.ibatis.session.RowBounds;
 import com.qzi.cms.common.po.UseResidentPo;
 import com.qzi.cms.server.base.BaseMapper;
 
+import javax.swing.*;
+
 /**
  * 住户信息DAO
  * @author qsy
@@ -187,5 +189,9 @@ public interface UseResidentMapper  extends BaseMapper<UseResidentPo>{
 
 	@Update("update use_resident set createTime = now() where id= #{residentId}")
 	public void updateCreateTime(@Param("residentId") String residentId);
+
+
+	@Select("SELECT  * from use_resident where residentType = #{type}")
+	public List<UseResidentPo> findType(@Param("type") String type);
 
 }

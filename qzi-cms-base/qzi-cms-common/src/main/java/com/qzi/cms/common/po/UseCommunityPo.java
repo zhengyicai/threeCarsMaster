@@ -104,6 +104,16 @@ public class UseCommunityPo {
 	 */
 	private String sysWorkId;
 
+	private String residentId;
+
+	public String getResidentId() {
+		return residentId;
+	}
+
+	public void setResidentId(String residentId) {
+		this.residentId = residentId;
+	}
+
 	public Integer getCode() {
 		return code;
 	}
