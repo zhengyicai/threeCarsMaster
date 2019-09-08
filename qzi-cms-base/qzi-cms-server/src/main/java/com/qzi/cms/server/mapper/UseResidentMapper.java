@@ -194,4 +194,8 @@ public interface UseResidentMapper  extends BaseMapper<UseResidentPo>{
 	@Select("SELECT  * from use_resident where residentType = #{type}")
 	public List<UseResidentPo> findType(@Param("type") String type);
 
+
+	@Select("SELECT  * from use_resident where state='10'")
+		public List<UseResidentPo> findAllRes();
+
 }

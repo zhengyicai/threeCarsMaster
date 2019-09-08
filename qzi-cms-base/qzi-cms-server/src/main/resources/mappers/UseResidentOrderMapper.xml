@@ -13,13 +13,19 @@
 		<where>
 			1=1
 			<if test="model.country != null and model.country !=''">
-				and country = #{model.country}
+				and o.country = #{model.country}
 			</if>
 			<if test="model.city != null and model.city !=''">
-				and city = #{model.city}
+				and o.city = #{model.city}
 			</if>
 			<if test="model.town != null and model.town !=''">
-				and town = #{model.town}
+				and o.town = #{model.town}
+			</if>
+			<if test="model.wxId != null and model.wxId !=''">
+				and o.wxId = #{model.wxId}
+			</if>
+			<if test="model.type != null and model.type !=''">
+				and o.type = #{model.type}
 			</if>
 		</where>
 		order by o.createTime desc
@@ -37,6 +43,12 @@
 					</if>
 					<if test="model.town != null and model.town !=''">
 						and o.town = #{model.town}
+					</if>
+					<if test="model.wxId != null and model.wxId !=''">
+						and o.wxId = #{model.wxId}
+					</if>
+					<if test="model.type != null and model.type !=''">
+						and o.type = #{model.type}
 					</if>
 				</where>
 				order by o.createTime desc

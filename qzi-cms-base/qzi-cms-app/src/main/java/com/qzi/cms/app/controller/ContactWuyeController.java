@@ -26,24 +26,24 @@ import com.qzi.cms.common.util.LogUtils;
 @RestController
 @RequestMapping("/contactWuye")
 public class ContactWuyeController {
-	@Resource
-	private ContactWuyeService contactWuyeService;
-	
-	/**
-	 * 获取用户管理机
-	 * @return 响应数据
-	 */
-	@GetMapping("/findMgrMachines")
-	public RespBody findMgrMachines(){
-		RespBody respBody = new RespBody();
-		try {
-			//保存返回数据
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取用户管理机成功", contactWuyeService.findMgrMachines());
-		} catch (Exception ex) {
-			respBody.add(RespCodeEnum.ERROR.getCode(), "获取用户管理机失败");
-			LogUtils.error("获取用户管理机失败！",ex);
-		}
-		return respBody;
-	}
+//	@Resource
+//	private ContactWuyeService contactWuyeService;
+//
+//	/**
+//	 * 获取用户管理机
+//	 * @return 响应数据
+//	 */
+//	@GetMapping("/findMgrMachines")
+//	public RespBody findMgrMachines(){
+//		RespBody respBody = new RespBody();
+//		try {
+//			//保存返回数据
+//			respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取用户管理机成功", contactWuyeService.findMgrMachines());
+//		} catch (Exception ex) {
+//			respBody.add(RespCodeEnum.ERROR.getCode(), "获取用户管理机失败");
+//			LogUtils.error("获取用户管理机失败！",ex);
+//		}
+//		return respBody;
+//	}
 	
 }

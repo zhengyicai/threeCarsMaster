@@ -9,12 +9,15 @@ import com.qzi.cms.common.resp.Paging;
 import com.qzi.cms.common.resp.RespBody;
 import com.qzi.cms.common.util.LogUtils;
 import com.qzi.cms.common.vo.SysParameterVo;
+import com.qzi.cms.server.mapper.UseGoodsMapper;
+import com.qzi.cms.server.mapper.UseGoodsRecordMapper;
 import com.qzi.cms.server.service.web.GoodsRecordService;
 import com.qzi.cms.server.service.web.GoodsService;
 import com.qzi.cms.server.service.web.ParameterService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * 物品价格
@@ -29,6 +32,11 @@ public class GoodsController {
 
     @Resource
     private GoodsService goodsService;
+    @Resource
+    private UseGoodsMapper useGoodsMapper;
+
+    @Resource
+    private UseGoodsRecordMapper useGoodsRecordMapper;
 
 
     @Resource
@@ -69,12 +77,25 @@ public class GoodsController {
     public RespBody update(@RequestBody GoodsPo goodsPo){
         RespBody respBody = new RespBody();
         try {
-            goodsService.update(goodsPo);
+
+
+           GoodsPo oldPo =    useGoodsMapper.findOne(goodsPo.getId());
+
+           // goodsPo.setUpdateTime(new Date());
+            //调用dao修改数据
+            GoodsPo goodsPo1 = new GoodsPo();
+            goodsPo1.setId(goodsPo.getId());
+            goodsPo1.setCreateTime(goodsPo.getCreateTime());
+            goodsPo1.setUpdateTime(new Date());
+            goodsPo1.setName(goodsPo.getName());
+            goodsPo1.setPrice(goodsPo.getPrice());
+            goodsPo1.setState(goodsPo.getState());
+            useGoodsMapper.updatePrice(goodsPo1);
 
             //增加一个记录
             GoodsRecordPo goodsRecordPo = new GoodsRecordPo();
             goodsRecordPo.setName(goodsPo.getName());
-            goodsRecordPo.setPrice(goodsPo.getPrice());
+            goodsRecordPo.setPrice(oldPo.getPrice());
             goodsRecordPo.setGoodsId(goodsPo.getId());
             goodsRecordService.add(goodsRecordPo);
             respBody.add(RespCodeEnum.SUCCESS.getCode(), "修改货品保存成功");
@@ -101,6 +122,22 @@ public class GoodsController {
         }
         return respBody;
     }
+
+
+    @GetMapping("/detailFindAll")
+       public RespBody detailFindAll(String id){
+           RespBody respBody = new RespBody();
+           try {
+               //保存返回数据
+               respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有货品数据成功", useGoodsRecordMapper.findAllId(id));
+               //保存分页对象
+
+           } catch (Exception ex) {
+               respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有货品数据失败");
+               LogUtils.error("查找所有货品数据失败！",ex);
+           }
+           return respBody;
+       }
 
 
 }

@@ -60,6 +60,7 @@ public class GoodsServiceImpl implements GoodsService {
 		goodsPo.setUpdateTime(new Date());
 		//调用dao修改数据
 		useGoodsMapper.updateByPrimaryKey(goodsPo);
+		
 	}
 
 
@@ -67,7 +68,7 @@ public class GoodsServiceImpl implements GoodsService {
 	@Override
 	public void delete(GoodsPo goodsPo) {
 		//调用dao删除数据
-		useGoodsMapper.deleteByPrimaryKey(goodsPo.getId());
+		useGoodsMapper.removePrice(goodsPo);
 	}
 
 	@Override

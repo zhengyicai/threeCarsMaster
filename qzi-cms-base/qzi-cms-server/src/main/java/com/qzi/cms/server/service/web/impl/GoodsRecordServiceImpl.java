@@ -62,7 +62,7 @@ public class GoodsRecordServiceImpl implements GoodsRecordService{
 	@Override
 	public void delete(GoodsRecordPo goodsPo) {
 		//调用dao删除数据
-		useGoodsRecordMapper.deleteByPrimaryKey(goodsPo.getId());
+		useGoodsRecordMapper.removePrice(goodsPo);
 	}
 
 	@Override

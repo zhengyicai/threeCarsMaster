@@ -81,4 +81,7 @@ public interface UseCommunityMapper extends BaseMapper<UseCommunityPo>{
 	@Select("select id,communityName,state from use_community")
 	public  List<UseCommunityPo> wxFindAll();
 
+	@Select("select * from use_community where state = '10'")
+	public List<UseCommunityPo> findAllCom();
+
 }

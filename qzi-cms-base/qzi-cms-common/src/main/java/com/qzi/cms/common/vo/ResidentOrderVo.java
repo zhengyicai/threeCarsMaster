@@ -41,6 +41,7 @@ public class ResidentOrderVo {
     private String carName;
     private String carMobile;
 
+
     public String getCarName() {
         return carName;
     }

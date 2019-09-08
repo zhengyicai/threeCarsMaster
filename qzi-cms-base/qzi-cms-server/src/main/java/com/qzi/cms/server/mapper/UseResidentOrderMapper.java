@@ -41,5 +41,13 @@ public interface UseResidentOrderMapper extends BaseMapper<ResidentOrderPo>{
 	@Select("select * from use_order_detail where orderId = #{orderId}")
 	public List<ResidentOrderDetailPo> findRecord(@Param("orderId") String orderId);
 
+	@Select("select * from use_resident_order where id = #{id}")
+	public ResidentOrderPo findId(@Param("id") String id);
+
+
+
+	
+
+
 
 }

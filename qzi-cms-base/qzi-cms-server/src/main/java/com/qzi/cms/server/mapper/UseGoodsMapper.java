@@ -9,10 +9,13 @@ package com.qzi.cms.server.mapper;
 
 import com.qzi.cms.common.po.GoodsPo;
 import com.qzi.cms.common.po.SysParameterPo;
+import com.qzi.cms.common.po.UseCommunityPo;
 import com.qzi.cms.common.vo.SysParameterVo;
 import com.qzi.cms.server.base.BaseMapper;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
@@ -35,11 +38,22 @@ public interface UseGoodsMapper extends BaseMapper<GoodsPo>{
 	@Select("select * from use_goods order by createTime desc")
 	public List<GoodsPo> findAllApp();
 
+
+
+	@Update("update use_goods set name=#{model.name} , price = #{model.price} ,updateTime = #{model.updateTime} where id = #{model.id}")
+	public void updatePrice(@Param("model") GoodsPo po);
+
+    @Delete("delete from use_goods where id = #{model.id}")
+	public void removePrice(@Param("model") GoodsPo po);
+
 	/**
 	 * @return
 	 */
 	@Select("select count(1) from use_goods")
 	public long findCount();
+
+	@Select("select * from use_goods where id = #{id}")
+	public GoodsPo findOne(@Param("id") String  id);
 
 
 }

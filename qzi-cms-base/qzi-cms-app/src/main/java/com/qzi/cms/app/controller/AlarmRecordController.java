@@ -35,7 +35,7 @@ public class AlarmRecordController {
 	
 	/**
 	 * 获取报警记录列表
-	 * @param equipmentId 设备编号
+	 * @param  设备编号
 	 * @return 响应数据
 	 */
 	@GetMapping("/findAlarmRecords")
