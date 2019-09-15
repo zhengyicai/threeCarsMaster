@@ -132,6 +132,11 @@ public interface UseResidentMapper  extends BaseMapper<UseResidentPo>{
 
 
 
+	@Select("select * from use_resident where mobile=#{mobile} and residentType ='20'")
+		public UseResidentPo findMobileType(@Param("mobile") String loginName);
+
+
+
 	@Select("select * from use_resident where wxId=#{wxId} limit 1")
 	public UseResidentPo findWxId(@Param("wxId") String wxId);
 

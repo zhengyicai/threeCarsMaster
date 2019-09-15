@@ -38,7 +38,7 @@ public class UseSuggestController {
        }
 
        @PostMapping("/add")
-       @SystemControllerLog(description="新增订单")
+       @SystemControllerLog(description="新增建议")
        public RespBody add(@RequestBody UseSuggestPo useSuggestPo){
            RespBody respBody = new RespBody();
            try {

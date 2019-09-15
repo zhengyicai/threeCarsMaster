@@ -40,7 +40,15 @@ public class ResidentOrderVo {
 
     private String carName;
     private String carMobile;
+    private String doorTimes;
 
+    public String getDoorTimes() {
+        return doorTimes;
+    }
+
+    public void setDoorTimes(String doorTimes) {
+        this.doorTimes = doorTimes;
+    }
 
     public String getCarName() {
         return carName;

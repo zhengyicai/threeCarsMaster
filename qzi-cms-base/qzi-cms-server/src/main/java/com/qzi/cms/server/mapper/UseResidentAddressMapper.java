@@ -40,8 +40,11 @@ public interface UseResidentAddressMapper extends BaseMapper<ResidentAddressPo>{
 
 
 
-	@Select("select * from use_resident_address where wxId=#{wxId} order by type asc")
+	@Select("select * from use_resident_address where  state='10' and  wxId=#{wxId} order by type asc")
 	public  List<ResidentAddressPo> findAllWxId(@Param("wxId") String wxId);
+
+	@Select("select * from use_resident_address where id = #{id}")
+	public ResidentAddressPo findOne(@Param("id") String id);
 	
 
 

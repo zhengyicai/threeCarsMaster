@@ -1,7 +1,6 @@
-package com.qzi.cms.common.po;
+package com.qzi.cms.common.vo;
 
 
-import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -9,9 +8,8 @@ import java.util.Date;
  * 用户地址
  */
 
-@Table(name="use_resident_address")
-public class ResidentAddressPo {
-    @Id
+
+public class ResidentAddressVo {
     private String id;
     private String userId;
     private String wxId;
@@ -25,6 +23,15 @@ public class ResidentAddressPo {
     private String state;
     private Date createTime;
     private Date  updateTime;
+    private String  addressId;
+
+    public String getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(String addressId) {
+        this.addressId = addressId;
+    }
 
     public Date getUpdateTime() {
         return updateTime;

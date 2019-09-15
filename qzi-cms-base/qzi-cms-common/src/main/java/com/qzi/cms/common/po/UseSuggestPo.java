@@ -1,5 +1,6 @@
 package com.qzi.cms.common.po;
 
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -11,6 +12,7 @@ import java.util.Date;
 
 @Table(name="use_suggest")
 public class UseSuggestPo {
+    @Id
     private String id;
     private String wxId;
     private String mobile;

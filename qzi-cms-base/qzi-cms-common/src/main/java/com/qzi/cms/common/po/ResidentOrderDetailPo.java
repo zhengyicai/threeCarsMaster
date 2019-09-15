@@ -1,6 +1,7 @@
 package com.qzi.cms.common.po;
 
 
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -11,6 +12,7 @@ import java.util.Date;
 
 @Table(name="use_order_detail")
 public class ResidentOrderDetailPo {
+    @Id
     private String id;
     private String goodsId;
     private String goodsName;

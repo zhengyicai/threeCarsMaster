@@ -26,6 +26,10 @@ public interface LoginService {
 	 * @throws Exception
 	 */
 	public RespBody LoginIn(LoginVo loginVo) throws Exception;
+
+
+
+	public RespBody ResidentLoginIn(LoginVo loginVo) throws Exception;
 	
 
 

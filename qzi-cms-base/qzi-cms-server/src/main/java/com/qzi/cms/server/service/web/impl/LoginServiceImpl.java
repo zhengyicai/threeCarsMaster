@@ -9,6 +9,8 @@ package com.qzi.cms.server.service.web.impl;
 
 import javax.annotation.Resource;
 
+import com.qzi.cms.common.po.UseResidentPo;
+import com.qzi.cms.server.mapper.UseResidentMapper;
 import org.springframework.stereotype.Service;
 
 import com.qzi.cms.common.enums.RespCodeEnum;
@@ -34,6 +36,11 @@ import com.qzi.cms.server.service.web.LoginService;
 public class LoginServiceImpl implements LoginService {
 	@Resource
 	private SysUserMapper userMapper;
+
+
+	@Resource
+	private UseResidentMapper useResidentMapper;
+
 	@Resource
 	private RedisService redisService;
 	@Resource
@@ -90,5 +97,52 @@ public class LoginServiceImpl implements LoginService {
 		}
 		return respBody;
 	}
-	
+
+	@Override
+	public RespBody ResidentLoginIn(LoginVo loginVo) throws Exception {
+		RespBody respBody = new RespBody();
+			// 产生token
+			String token = ToolUtils.getUUID();
+			//验证码是否正确
+			String picCode = redisService.getString(loginVo.getImgKey());
+			if(picCode != null && picCode.equals(loginVo.getPicCode())){
+				//验证码正确,查询用户信息
+				//SysUserVo userVo = userMapper.findByloginName(loginVo.getLoginName());
+
+				UseResidentPo useResidentPo =  useResidentMapper.findMobileType(loginVo.getLoginName());
+				// 是否查找到用户信息
+				if (useResidentPo == null) {
+					// 不存在
+					respBody.add(RespCodeEnum.ERROR.getCode(), "登录用户不存在");
+				} else {
+					// 存在用户，判断是否有效
+					if (useResidentPo.getState().equals(StateEnum.DISABLE.getCode())) {
+						// 无效用户
+						respBody.add(RespCodeEnum.ERROR.getCode(), "登录用户已被禁用，请联系管理员！");
+					} else {
+						// 用户有效，对输入密码进行加密
+						String loginPw = CryptUtils.hmacSHA1Encrypt(loginVo.getPassword(), useResidentPo.getSalt());
+						// 验证密码是否正确
+						if (loginPw.equals(useResidentPo.getPassword())) {
+							//将对象转换成序列化对象
+							// 登录成功,将用户信息存储到redis中
+							if (!redisService.putObj(token, useResidentPo, confUtils.getSessionTimeout()).equalsIgnoreCase("ok")) {
+								// 缓存用户信息失败
+								respBody.add(RespCodeEnum.ERROR.getCode(), "缓存用户信息失败！");
+							} else {
+								respBody.add(RespCodeEnum.SUCCESS.getCode(), "用户登录成功", token);
+							}
+						} else {
+							// 登录失败
+							respBody.add(RespCodeEnum.ERROR.getCode(), "登录密码错误！");
+						}
+					}
+				}
+			}else{
+				//验证码输入有误或失效
+				respBody.add(RespCodeEnum.ERROR.getCode(), "验证码输入有误或已失效");
+			}
+			return respBody;
+	}
+
 }

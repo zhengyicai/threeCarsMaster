@@ -1,5 +1,6 @@
 package com.qzi.cms.common.po;
 
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -10,7 +11,7 @@ import java.util.Date;
 
 @Table(name="sys_notice")
 public class SysNoticePo {
-
+    @Id
     private String id;
     private String communityId;
     private String title;

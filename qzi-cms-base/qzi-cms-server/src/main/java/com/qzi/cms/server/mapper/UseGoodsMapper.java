@@ -35,7 +35,7 @@ public interface UseGoodsMapper extends BaseMapper<GoodsPo>{
 	@Select("select * from use_goods order by createTime desc")
 	public List<GoodsPo> findAll(RowBounds rwoBounds);
 
-	@Select("select * from use_goods order by createTime desc")
+	@Select("select * from use_goods order by price  asc")
 	public List<GoodsPo> findAllApp();
 
 

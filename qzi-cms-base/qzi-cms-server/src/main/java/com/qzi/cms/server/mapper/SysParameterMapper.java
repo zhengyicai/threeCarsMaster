@@ -49,4 +49,13 @@ public interface SysParameterMapper extends BaseMapper<SysParameterPo>{
 	@Select("SELECT paraValue from sys_parameter where paraName=#{paramName};")
 	public String findParam(@Param("paramName") String paramName);
 
+
+	/**
+	 * 获取参数列表
+	 * @param
+	 * @return
+	 */
+	@Select("SELECT *  from sys_parameter where paraName='detail' or paraName='mobile' or paraName='email'")
+	public List<SysParameterVo> findParamList();
+
 }
