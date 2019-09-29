@@ -96,4 +96,11 @@ public interface UseCommunityMapper extends BaseMapper<UseCommunityPo>{
 	public  List<String> findAddress(@Param("city") String  city);
 
 
+	@Select("select DISTINCT area,city from use_community ")
+	public  List<UseCommunityPo> findAreas();
+
+	@Select("select DISTINCT address,area from use_community ")
+	public  List<UseCommunityPo> findAddresss();
+
+
 }

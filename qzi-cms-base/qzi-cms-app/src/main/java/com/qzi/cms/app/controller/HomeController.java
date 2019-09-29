@@ -8,6 +8,7 @@ import com.qzi.cms.common.resp.RespBody;
 import com.qzi.cms.common.util.LogUtils;
 import com.qzi.cms.common.util.ToolUtils;
 import com.qzi.cms.common.util.YBBeanUtils;
+import com.qzi.cms.common.vo.CityCodeVo;
 import com.qzi.cms.common.vo.ResidentAddressVo;
 import com.qzi.cms.common.vo.ResidentOrderDetailVo;
 import com.qzi.cms.common.vo.ResidentOrderVo;
@@ -113,6 +114,71 @@ public class HomeController {
        return respBody;
    }
 
+
+
+    //获取当前用户的详细地址
+    @GetMapping("/addressList")
+    public RespBody addressList(){
+        RespBody respBody = new RespBody();
+        try {
+            //保存返回数据
+            List<String> city =   useCommunityMapper.findCity();
+            List<UseCommunityPo> area = useCommunityMapper.findAreas();
+            List<UseCommunityPo> address  = useCommunityMapper.findAddresss();
+
+
+            List<CityCodeVo> list = new ArrayList<CityCodeVo>();
+
+            for(int i = 0;i<city.size();i++){
+                CityCodeVo vo = new CityCodeVo();
+                vo.setText(city.get(i));
+                vo.setValue(city.get(i));
+
+                List<CityCodeVo> list1 = new ArrayList<CityCodeVo>();
+                    for(int j = 0;j<area.size();j++){
+                        if(city.get(i).equals(area.get(j).getCity())){
+                            CityCodeVo vo1 = new CityCodeVo();
+                            vo1.setText(area.get(j).getArea());
+                            vo1.setValue(area.get(j).getArea());
+                            List<CityCodeVo> list2 = new ArrayList<CityCodeVo>();
+                            for(int k = 0;k<address.size();k++){
+                                if(area.get(j).getArea().equals(address.get(k).getArea())) {
+                                    CityCodeVo vo2 = new CityCodeVo();
+                                    vo2.setText(address.get(k).getAddress());
+                                    vo2.setValue(address.get(k).getAddress());
+                                    list2.add(vo2);
+                                }
+
+
+                            }
+                            vo1.setChildren(list2);
+
+
+                            list1.add(vo1);
+                        }
+                    //    vo.setChildren(list1);
+
+                    }
+
+
+
+                vo.setChildren(list1);
+
+                list.add(vo);
+            }
+
+
+
+
+            respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取用户地址成功", list);
+        } catch (Exception ex) {
+            respBody.add(RespCodeEnum.ERROR.getCode(), "获取用户地址成功失败");
+        }
+        return respBody;
+    }
+
+
+   //
 
 
     //获取当前用户的详细地址
@@ -249,11 +315,11 @@ public class HomeController {
              useResidentOrderMapper.insert(po);
          }
 
-            respBody.add(RespCodeEnum.SUCCESS.getCode(), "新增货品保存成功");
+            respBody.add(RespCodeEnum.SUCCESS.getCode(), "订单提交成功");
 
         } catch (Exception ex) {
-            respBody.add(RespCodeEnum.ERROR.getCode(), "新增货品保存失败");
-            LogUtils.error("新增货品保存失败！",ex);
+            respBody.add(RespCodeEnum.ERROR.getCode(), "订单提交失败");
+            LogUtils.error("订单提交失败！",ex);
         }
         return respBody;
     }
