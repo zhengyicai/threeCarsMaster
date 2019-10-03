@@ -1,10 +1,14 @@
 package com.qzi.cms.app.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.qzi.cms.common.annotation.SystemControllerLog;
 import com.qzi.cms.common.enums.RespCodeEnum;
 import com.qzi.cms.common.po.*;
 import com.qzi.cms.common.resp.Paging;
 import com.qzi.cms.common.resp.RespBody;
+import com.qzi.cms.common.service.RedisService;
+import com.qzi.cms.common.util.HttpClientManager;
 import com.qzi.cms.common.util.LogUtils;
 import com.qzi.cms.common.util.ToolUtils;
 import com.qzi.cms.common.util.YBBeanUtils;
@@ -14,10 +18,13 @@ import com.qzi.cms.server.service.web.OrderService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Administrator on 2019/9/7.
@@ -58,6 +65,22 @@ public class HomeController {
     @Resource
     private UseResidentMapper useResidentMapper;
 
+
+    @Resource
+    private RedisService redisService;
+
+
+
+    public  DatagramSocket  socket = null;
+
+    
+
+
+
+
+
+       private   String appid = "wx23bfac0f706f04ac";
+       private   String appsecret = "098f8f3795cc7d4c2e51ecc95bf88b41";
 
 
 
@@ -626,7 +649,94 @@ public class HomeController {
                return respBody;
            }
 
+    @PostMapping("/sentWeixinText")
+       public RespBody sentWeixin(@RequestBody WxObjectVo vo) throws Exception {
+           RespBody respBody = new RespBody();
 
+           WxMessage wx = new WxMessage();
+
+           WxContent content = new WxContent();
+           content.setContent(vo.getContent());
+
+           wx.setTouser(vo.getWxId());
+           wx.setMsgtype("text");
+           wx.setText(content);
+
+           String url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+redisService.getString("access_token");
+           System.out.println("test"+ JSON.toJSONString(wx)) ;
+           respBody.add(RespCodeEnum.SUCCESS.getCode(), "操作结果", HttpClientManager.postUrlData(url,JSON.toJSONString(wx)));
+           return respBody;
+       }
+
+
+    //获取设备是否需要同步数据
+        @GetMapping("/sentPort")
+        public RespBody sentPort() throws  Exception{
+            RespBody respBody = new RespBody();
+
+
+            if(socket != null){
+                return respBody;
+            }
+
+
+            //刷新assess_token
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+              @Override
+              public void run() {
+                    System.out.println("assess_token:"+getAccessToken()) ;
+              }
+            }, 1000,7000000);// 设定指定的时间time,此处为2000毫秒
+
+
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+
+
+                    socket = new DatagramSocket(7000);
+                    byte[] buf = new byte[1024];
+
+                    
+                    } catch (SocketException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
+
+
+            return respBody;
+
+
+        }
+
+    //获取微信assess_token
+        private String getAccessToken() {
+
+
+            String url="https://api.weixin.qq.com/cgi-bin/token?"+"grant_type=client_credential&appid="+appid+"&secret="+appsecret;
+            try {
+
+                String result = HttpClientManager.getUrlData(url);
+
+                JSONObject pa=JSONObject.parseObject(result);
+                if(pa  !=null){
+                    redisService.putString("access_token",pa.getString("access_token") , 7000).equalsIgnoreCase("ok");
+                }else{
+
+                }
+                return result;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "";
+        }
 
 
 
