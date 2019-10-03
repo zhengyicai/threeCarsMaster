@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qzi.cms.server.mapper.OrderSumMapper">
+   <!-- 条件分页查询
+     private String city;
+    private String country;
+    private String town;
+
+    -->
+	<select id="findAll" resultType="OrderSumVo">
+		SELECT count(1) as count1, DATE_FORMAT( createTime, "%Y-%m-%d" ) as createTime ,sum(buyPrice) as buyPrice ,sum(sellPrice) as sellPrice FROM use_resident_order
+		<where>
+			1=1
+			<if test="model.wxId != null and model.wxId !=''">
+				and wxId = #{model.wxId}
+			</if>
+			<if test="model.type != null and model.type !=''">
+				and type = #{model.type}
+			</if>
+
+
+		</where>
+		GROUP BY DATE_FORMAT( createTime, "%Y-%m-%d" )
+		order by createTime desc
+		limit #{startRow}, #{pageSize};
+	</select>
+   
+	<select id="findCount" resultType="long" parameterType="String">
+		SELECT count(*) from  ( SELECT DATE_FORMAT( createTime, "%Y-%m-%d" ) as createTime ,sum(buyPrice) as buyPrice ,sum(sellPrice) as sellPrice FROM use_resident_order
+		<where>
+					1=1
+					<if test="model.wxId != null and model.wxId !=''">
+						and wxId = #{model.wxId}
+					</if>
+					<if test="model.type != null and model.type !=''">
+						and type = #{model.type}
+					</if>
+
+				</where>
+		GROUP BY DATE_FORMAT( createTime, "%Y-%m-%d" )
+		 ) as t
+
+	</select>
+
+
+	<select id="mouthfindAll" resultType="OrderSumVo">
+			SELECT count(1) as count1, DATE_FORMAT( createTime, "%Y-%m" ) as createTime1 ,sum(buyPrice) as buyPrice ,sum(sellPrice) as sellPrice FROM use_resident_order
+			<where>
+				1=1
+				<if test="model.wxId != null and model.wxId !=''">
+					and wxId = #{model.wxId}
+				</if>
+				<if test="model.type != null and model.type !=''">
+					and type = #{model.type}
+				</if>
+
+
+			</where>
+			GROUP BY DATE_FORMAT( createTime, "%Y-%m" )
+			order by createTime1 desc
+			limit #{startRow}, #{pageSize};
+		</select>
+
+		<select id="mouthfindCount" resultType="long" parameterType="String">
+			SELECT count(*) from  ( SELECT DATE_FORMAT( createTime, "%Y-%m" ) as createTime ,sum(buyPrice) as buyPrice ,sum(sellPrice) as sellPrice FROM use_resident_order
+			<where>
+						1=1
+						<if test="model.wxId != null and model.wxId !=''">
+							and wxId = #{model.wxId}
+						</if>
+						<if test="model.type != null and model.type !=''">
+							and type = #{model.type}
+						</if>
+
+					</where>
+			GROUP BY DATE_FORMAT( createTime, "%Y-%m" )
+			 ) as t
+
+		</select>
+
+
+	<select id="todayFindAll" resultType="OrderSumVo" parameterType="String">
+		  select count(1) as count1,sum(buyPrice) as  buyPrice,sum(sellPrice) as sellPrice  from use_resident_order 
+			<where>
+				TO_DAYS(createTime) = TO_DAYS(now()) and 1=1
+				<if test="model.wxId != null and model.wxId !=''">
+					and wxId = #{model.wxId}
+				</if>
+				<if test="model.type != null and model.type !=''">
+					and type = #{model.type}
+				</if>
+
+			</where>
+		</select>
+
+
+
+
+</mapper>

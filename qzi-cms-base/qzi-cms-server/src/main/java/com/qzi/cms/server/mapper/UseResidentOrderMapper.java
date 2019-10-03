@@ -31,7 +31,7 @@ public interface UseResidentOrderMapper extends BaseMapper<ResidentOrderPo>{
 	 * @return
 	 */
 
-	public List<ResidentOrderVo> findAll(RowBounds rwoBounds,@Param("model") ResidentOrderVo vo);
+	public List<ResidentOrderVo> findAll(@Param("startRow")int startRow,@Param("pageSize")int pageSize,@Param("model") ResidentOrderVo vo);
 
 	
 	/**
@@ -47,12 +47,21 @@ public interface UseResidentOrderMapper extends BaseMapper<ResidentOrderPo>{
 	public ResidentOrderPo findId(@Param("id") String id);
 
 
+
+	@Select("select *,r.name as carName,r.mobile as carMobile from use_resident_order o left join use_resident_address a on o.addressId = a.id left join use_resident r on r.id = o.carId where o.id=#{id}")
+	public ResidentOrderVo findIds(@Param("id") String id);
+
+
 	@Update("update use_resident_order set buyPrice =#{buyPrice} where id = #{id}")
 	void updateBuyprice(@Param("buyPrice") String buyPrice,@Param("id") String id);
 
 
 	@Update("update use_resident_order set sellPrice =#{sellPrice} where id = #{id}")
 	void updateSellprice(@Param("sellPrice") String sellPrice,@Param("id") String id);
+
+
+	@Update("update use_resident_order set type =#{type} where id = #{id}")
+		void updateType(@Param("type") String type,@Param("id") String id);
 
 
 

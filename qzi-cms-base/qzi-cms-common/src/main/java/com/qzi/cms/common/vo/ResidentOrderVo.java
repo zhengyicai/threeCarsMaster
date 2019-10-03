@@ -42,6 +42,28 @@ public class ResidentOrderVo {
     private String carMobile;
     private String doorTimes;
 
+    //显示当天
+    private String today;
+
+    //显示失败的订单
+    private String isError;
+
+    public String getIsError() {
+        return isError;
+    }
+
+    public void setIsError(String isError) {
+        this.isError = isError;
+    }
+
+    public String getToday() {
+        return today;
+    }
+
+    public void setToday(String today) {
+        this.today = today;
+    }
+
     public String getDoorTimes() {
         return doorTimes;
     }

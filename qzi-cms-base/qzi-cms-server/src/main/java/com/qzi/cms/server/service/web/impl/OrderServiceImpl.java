@@ -11,7 +11,9 @@ import com.qzi.cms.common.po.GoodsPo;
 import com.qzi.cms.common.po.ResidentOrderPo;
 import com.qzi.cms.common.resp.Paging;
 import com.qzi.cms.common.util.ToolUtils;
+import com.qzi.cms.common.vo.OrderSumVo;
 import com.qzi.cms.common.vo.ResidentOrderVo;
+import com.qzi.cms.server.mapper.OrderSumMapper;
 import com.qzi.cms.server.mapper.UseGoodsMapper;
 import com.qzi.cms.server.mapper.UseResidentOrderMapper;
 import com.qzi.cms.server.service.web.GoodsService;
@@ -34,10 +36,19 @@ public class OrderServiceImpl implements OrderService {
 	@Resource
 	private UseResidentOrderMapper  useResidentOrderMapper;
 
+	@Resource
+	private OrderSumMapper orderSumMapper;
+
 	@Override
 	public List<ResidentOrderVo> findAll(Paging paging,ResidentOrderVo vo) throws Exception {
-		RowBounds rwoBounds = new RowBounds(paging.getPageNumber(),paging.getPageSize());
-		return useResidentOrderMapper.findAll(rwoBounds,vo);
+		int startRow=0;int pageSize=0;
+		if(null!=paging){
+			startRow=(paging.getPageNumber()>0)?(paging.getPageNumber()-1)*paging.getPageSize():0;
+			pageSize=paging.getPageSize();
+		}else{
+			pageSize=Integer.MAX_VALUE;
+		}
+		return useResidentOrderMapper.findAll(startRow,pageSize,vo);
 	}
 
 
@@ -72,6 +83,40 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public long findCount(ResidentOrderVo vo) {
 		return useResidentOrderMapper.findCount(vo);
+	}
+
+	@Override
+	public List<OrderSumVo> findSum(Paging paging, OrderSumVo vo) throws Exception {
+		int startRow=0;int pageSize=0;
+		if(null!=paging){
+			startRow=(paging.getPageNumber()>0)?(paging.getPageNumber()-1)*paging.getPageSize():0;
+			pageSize=paging.getPageSize();
+		}else{
+			pageSize=Integer.MAX_VALUE;
+		}
+		return orderSumMapper.findAll(startRow,pageSize,vo);
+	}
+
+	@Override
+	public long findCountSum(OrderSumVo vo) {
+		return orderSumMapper.findCount(vo);
+	}
+
+	@Override
+	public List<OrderSumVo> mouthfindSum(Paging paging, OrderSumVo vo) throws Exception {
+		int startRow=0;int pageSize=0;
+			if(null!=paging){
+				startRow=(paging.getPageNumber()>0)?(paging.getPageNumber()-1)*paging.getPageSize():0;
+				pageSize=paging.getPageSize();
+			}else{
+				pageSize=Integer.MAX_VALUE;
+			}
+		return orderSumMapper.mouthfindAll(startRow,pageSize,vo);
+	}
+
+	@Override
+	public long mouthfindCountSum(OrderSumVo vo) {
+		return orderSumMapper.mouthfindCount(vo);
 	}
 
 }

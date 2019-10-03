@@ -10,6 +10,7 @@ package com.qzi.cms.server.service.web;
 import com.qzi.cms.common.po.GoodsPo;
 import com.qzi.cms.common.po.ResidentOrderPo;
 import com.qzi.cms.common.resp.Paging;
+import com.qzi.cms.common.vo.OrderSumVo;
 import com.qzi.cms.common.vo.ResidentOrderVo;
 import com.qzi.cms.common.vo.UseResidentVo;
 
@@ -56,5 +57,12 @@ public interface OrderService {
 	 * @return
 	 */
 	public long findCount(ResidentOrderVo vo);
+
+	public List<OrderSumVo> findSum(Paging paging,OrderSumVo vo) throws   Exception;
+	public long findCountSum(OrderSumVo vo);
+
+
+	public List<OrderSumVo> mouthfindSum(Paging paging,OrderSumVo vo) throws   Exception;
+		public long mouthfindCountSum(OrderSumVo vo);
 	
 }

@@ -8,10 +8,7 @@ import com.qzi.cms.common.resp.RespBody;
 import com.qzi.cms.common.util.LogUtils;
 import com.qzi.cms.common.util.ToolUtils;
 import com.qzi.cms.common.util.YBBeanUtils;
-import com.qzi.cms.common.vo.CityCodeVo;
-import com.qzi.cms.common.vo.ResidentAddressVo;
-import com.qzi.cms.common.vo.ResidentOrderDetailVo;
-import com.qzi.cms.common.vo.ResidentOrderVo;
+import com.qzi.cms.common.vo.*;
 import com.qzi.cms.server.mapper.*;
 import com.qzi.cms.server.service.web.OrderService;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +52,11 @@ public class HomeController {
     @Resource
     private SysParameterMapper sysParameterMapper;
 
+    @Resource
+    private OrderSumMapper orderSumMapper;
+
+    @Resource
+    private UseResidentMapper useResidentMapper;
 
 
 
@@ -189,9 +191,9 @@ public class HomeController {
            //保存返回数据
 
 
-           respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取用户地址成功", useResidentAddressMapper.updateByPrimaryKey(po));
+           respBody.add(RespCodeEnum.SUCCESS.getCode(), "修改用户地址成功", useResidentAddressMapper.updateByPrimaryKey(po));
        } catch (Exception ex) {
-           respBody.add(RespCodeEnum.ERROR.getCode(), "获取用户地址成功失败");
+           respBody.add(RespCodeEnum.ERROR.getCode(), "修改用户地址失败");
        }
        return respBody;
    }
@@ -262,9 +264,22 @@ public class HomeController {
 
     @PostMapping("/address/add")
     @SystemControllerLog(description="新增地址")
-    public RespBody addressAdd(@RequestBody ResidentAddressPo po){
+    public RespBody addressAdd(@RequestBody ResidentAddressVo vo) throws Exception {
         RespBody respBody = new RespBody();
+
+        ResidentAddressPo po = YBBeanUtils.copyProperties(vo, ResidentAddressPo.class);
+
+
         try {
+            if(vo.getTitle() != "" && vo.getTitle() != null){
+                UseResidentPo useResidentPo =   useResidentMapper.findWxId(vo.getWxId());
+                if(useResidentPo!=null){
+                    useResidentPo.setRemark(vo.getTitle());
+                    
+                    useResidentMapper.updateByPrimaryKey(useResidentPo);
+                }
+                po.setType("10");
+            }
 
             po.setId(ToolUtils.getUUID());
             po.setState("10");
@@ -272,11 +287,11 @@ public class HomeController {
             po.setUpdateTime(new Date());
 
             useResidentAddressMapper.insert(po);
-            respBody.add(RespCodeEnum.SUCCESS.getCode(), "新增货品保存成功");
+            respBody.add(RespCodeEnum.SUCCESS.getCode(), "新增地址保存成功");
 
         } catch (Exception ex) {
-            respBody.add(RespCodeEnum.ERROR.getCode(), "新增货品保存失败");
-            LogUtils.error("新增货品保存失败！",ex);
+            respBody.add(RespCodeEnum.ERROR.getCode(), "新增地址保存失败");
+            LogUtils.error("新增地址保存失败！",ex);
         }
         return respBody;
     }
@@ -336,6 +351,7 @@ public class HomeController {
                if(po!=null){
 
                    po.setType(vo.getType());
+                   po.setCarId(vo.getCarId());
                    useResidentOrderMapper.updateByPrimaryKey(po);
 
                }
@@ -359,15 +375,39 @@ public class HomeController {
    @SystemControllerLog(description="新增订单")
    public RespBody orderAdd(@RequestBody ResidentOrderDetailVo vo){
        RespBody respBody = new RespBody();
+
+
+
+
        try {
-          for(int i = 0; i<vo.getDetailList().size();i++){
+
+           Double as = 0.00;
+          for(int i = 0; i<vo.getDetailLists().size();i++){
               ResidentOrderDetailPo residentOrderDetailPo = new ResidentOrderDetailPo();
+
+              residentOrderDetailPo.setBuyWeight(vo.getDetailLists().get(i).getBuyWeight());
+              residentOrderDetailPo.setBuyPrice(vo.getDetailLists().get(i).getBuyPrice());
+              residentOrderDetailPo.setGoodsName(vo.getDetailLists().get(i).getGoodsName());
+              residentOrderDetailPo.setGoodsId(vo.getDetailLists().get(i).getGoodsId());
+              residentOrderDetailPo.setOrderId(vo.getDetailLists().get(i).getOrderId());
+              residentOrderDetailPo.setSellPrice("0");
+              residentOrderDetailPo.setSellWeight("0");
+              as+=Double.valueOf(vo.getDetailLists().get(i).getBuyWeight())*Double.valueOf(vo.getDetailLists().get(i).getBuyPrice());
+
               residentOrderDetailPo.setId(ToolUtils.getUUID());
               residentOrderDetailPo.setState("10");
               residentOrderDetailPo.setCreateTime(new Date());
+
+
               useOrderDetailMapper.insert(residentOrderDetailPo);
           }
 
+           ResidentOrderPo residentOrderPo =   useResidentOrderMapper.findId(vo.getDetailLists().get(0).getOrderId());
+           residentOrderPo.setType("40");
+            String prices =  String.format("%.2f", as);
+           residentOrderPo.setBuyprice(prices);
+           useResidentOrderMapper.updateByPrimaryKey(residentOrderPo);
+           //useResidentOrderMapper.updateType("40",vo.getOrderId());
            respBody.add(RespCodeEnum.SUCCESS.getCode(), "新增货品保存成功");
 
        } catch (Exception ex) {
@@ -407,24 +447,48 @@ public class HomeController {
 
         //获取当前用户所有的订单
       @GetMapping("/getOrderList")
-      public RespBody getOrderList(Paging paging, String wxId,String state){
+      public RespBody getOrderList(Paging paging, String wxId,String state,String today,String isError,String type){
           RespBody respBody = new RespBody();
           try {
               //保存返回数据
               ResidentOrderVo vo = new ResidentOrderVo();
               vo.setWxId(wxId);
               vo.setState(state);
+              vo.setToday(today);
+              vo.setIsError(isError);
+              vo.setType(type);
 
               respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有订单数据成功", orderService.findAll(paging,vo));
             //保存分页对象
             paging.setTotalCount(orderService.findCount(vo));
             respBody.setPage(paging);
-              respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取用户管理机成功", useResidentAddressMapper.findAllWxId(wxId));
+             // respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取用户管理机成功", useResidentAddressMapper.findAllWxId(wxId));
           } catch (Exception ex) {
               respBody.add(RespCodeEnum.ERROR.getCode(), "获取用户管理机失败");
           }
           return respBody;
       }
+
+
+       //获取当前用户所有的订单
+        @GetMapping("/getOrderDetail")
+        public RespBody getOrderDetail(String id){
+            RespBody respBody = new RespBody();
+            try {
+                //保存返回数据
+
+                respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找订单详情数据成功", useResidentOrderMapper.findIds(id));
+              //保存分页对象
+
+            } catch (Exception ex) {
+                respBody.add(RespCodeEnum.ERROR.getCode(), "获取订单详情失败");
+            }
+            return respBody;
+        }
+
+
+
+
 
 
 
@@ -505,6 +569,62 @@ public class HomeController {
             }
             return respBody;
         }
+
+
+
+      @GetMapping("/orderList/findAll")
+       public RespBody findAll(Paging paging, OrderSumVo orderSumVo){
+           RespBody respBody = new RespBody();
+           try {
+               //保存返回数据
+
+
+               respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有订单数据成功",orderService.findSum(paging,orderSumVo));
+               //保存分页对象
+               paging.setTotalCount(orderService.findCountSum(orderSumVo));
+               respBody.setPage(paging);
+           } catch (Exception ex) {
+               respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有订单数据失败");
+               LogUtils.error("查找所有订单数据失败！",ex);
+           }
+           return respBody;
+       }
+
+    @GetMapping("/orderList/mouthfindAll")
+           public RespBody mouthfindAll(Paging paging, OrderSumVo orderSumVo){
+               RespBody respBody = new RespBody();
+               try {
+                   //保存返回数据
+
+
+                   respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有订单数据成功",orderService.mouthfindSum(paging,orderSumVo));
+                   //保存分页对象
+                   paging.setTotalCount(orderService.mouthfindCountSum(orderSumVo));
+                   respBody.setPage(paging);
+               } catch (Exception ex) {
+                   respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有订单数据失败");
+                   LogUtils.error("查找所有订单数据失败！",ex);
+               }
+               return respBody;
+           }
+
+
+    @GetMapping("/orderList/toDayFindAll")
+           public RespBody toDayFindAll(OrderSumVo orderSumVo){
+               RespBody respBody = new RespBody();
+               try {
+                   //保存返回数据
+
+                   respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有订单数据成功", orderSumMapper.todayFindAll(orderSumVo));
+                   //保存分页对象
+
+
+               } catch (Exception ex) {
+                   respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有订单数据失败");
+                   LogUtils.error("查找所有订单数据失败！",ex);
+               }
+               return respBody;
+           }
 
 
 

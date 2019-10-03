@@ -24,6 +24,15 @@ public class ResidentAddressVo {
     private Date createTime;
     private Date  updateTime;
     private String  addressId;
+    private String title;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getAddressId() {
         return addressId;

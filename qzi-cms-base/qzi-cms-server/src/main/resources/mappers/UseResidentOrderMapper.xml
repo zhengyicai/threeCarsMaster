@@ -24,13 +24,21 @@
 			<if test="model.wxId != null and model.wxId !=''">
 				and o.wxId = #{model.wxId}
 			</if>
+			<if test="model.isError != null and model.isError !=''">
+				and (o.type = '40' or o.type = '30' or o.type = '50')
+			</if>
 			<if test="model.type != null and model.type !=''">
 				and o.type = #{model.type}
 			</if>
+
+			<if test="model.today != null and model.today !=''">
+				and TO_DAYS(o.createTime) = TO_DAYS(now())
+			</if>
 		</where>
 		order by o.createTime desc
+		limit #{startRow}, #{pageSize};
 	</select>
-   
+
 	<select id="findCount" resultType="long" parameterType="String">
 		select count(1) from use_resident_order o left join use_resident_address a on o.addressId = a.id
 				<where>
@@ -47,9 +55,15 @@
 					<if test="model.wxId != null and model.wxId !=''">
 						and o.wxId = #{model.wxId}
 					</if>
+					<if test="model.isError != null and model.isError !=''">
+						and (o.type = '40' or o.type = '30' or o.type = '50')
+					</if>
 					<if test="model.type != null and model.type !=''">
 						and o.type = #{model.type}
 					</if>
+					<if test="model.today != null and model.today !=''">
+							and TO_DAYS(o.createTime) = TO_DAYS(now())
+						</if>
 				</where>
 				order by o.createTime desc
 	</select>

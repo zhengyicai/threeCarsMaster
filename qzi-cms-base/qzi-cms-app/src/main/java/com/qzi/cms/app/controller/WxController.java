@@ -7,12 +7,17 @@ package com.qzi.cms.app.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.qzi.cms.common.enums.RespCodeEnum;
+import com.qzi.cms.common.po.ResidentAddressPo;
+import com.qzi.cms.common.po.UseResidentPo;
 import com.qzi.cms.common.resp.RespBody;
 import com.qzi.cms.common.util.HttpClientManager;
 
 
 import com.qzi.cms.common.util.LogUtils;
+import com.qzi.cms.common.util.ToolUtils;
 import com.qzi.cms.server.mapper.UseCommunityMapper;
+import com.qzi.cms.server.mapper.UseResidentAddressMapper;
+import com.qzi.cms.server.mapper.UseResidentMapper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +26,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 
@@ -37,11 +44,19 @@ public class WxController {
     @Resource
     private UseCommunityMapper useCommunityMapper;
 
+
+    @Resource
+    private UseResidentMapper useResidentMapper;
+
+    @Resource
+    private UseResidentAddressMapper useResidentAddressMapper;
+
     private String appid = "wx23bfac0f706f04ac";
     private String appsecret = "098f8f3795cc7d4c2e51ecc95bf88b41";
-    private String url = "http://weixin.zhcloudshare.com"; //回调接口
-    private String pageUrl = "http://www.zhcloudshare.com/menzha/home.html";  //返回页面
-    private String authPageUrl = "http://www.zhcloudshare.com/menzha/userAdd.html";  //访客授权页面
+    private String url = "http://testthree.umo119.com"; //回调接口
+    private String pageUrl = "http://testhome.umo119.com/threeCarsOne/first.html";  //返回页面
+    private String pageUrl1 = "http://testhome.umo119.com/threeCarsOne/one.html";  //返回页面
+    private String authPageUrl = "http://testhome.umo119.com/threeCarsOne/orderTabs1.html";  //访客授权页面
 
 
     @RequestMapping("loginInit.do")
@@ -58,7 +73,7 @@ public class WxController {
         String url ="https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +appid+
                 "&redirect_uri=" + URLEncoder.encode(backUrl,"UTF-8")+
                 "&response_type=code" +
-                "&scope=snsapi_base" +
+                "&scope=snsapi_userinfo" +
                 "&state=STATE#wechat_redirect";
             response.sendRedirect(url);
        // return  url;
@@ -80,14 +95,67 @@ public class WxController {
         Map<String,Object> data = JSONObject.parseObject(result);
         String openid=data.get("openid").toString();
         String token=data.get("access_token").toString();
+
+
         //获取信息
         String infoUrl="https://api.weixin.qq.com/sns/userinfo?access_token=" +token+
                 "&openid=" +openid+
                 "&lang=zh_CN";
         String infoResult = HttpClientManager.getUrlData(infoUrl);
 
+
+        Map<String,Object> data1 = JSONObject.parseObject(infoResult);
+        String nickName = data1.get("nickname").toString();
+        String headimgurl = data1.get("headimgurl").toString();
+
+
+        //判断wxid是否存在
+       UseResidentPo po =  useResidentMapper.findWxId(openid);
+       if(po !=null){
+
+       }else{
+
+           UseResidentPo useResidentPo = new UseResidentPo();
+           useResidentPo.setId(ToolUtils.getUUID());
+           useResidentPo.setName(nickName);
+           useResidentPo.setImgUrl(headimgurl);
+           useResidentPo.setCreateTime(new Date());
+           useResidentPo.setState("10");
+           useResidentPo.setWxId(openid);
+           useResidentPo.setMobile("");
+           useResidentPo.setSalt("");
+           useResidentPo.setPassword("");
+           useResidentPo.setClientNumber("");
+           useResidentPo.setClientPwd("");
+           useResidentPo.setLoginToken("");
+           useResidentPo.setOpenPwd("");
+           useResidentPo.setLastTime(new Date());
+           useResidentPo.setRemark("");
+           useResidentPo.setIdentityId("");
+           useResidentPo.setIdentityNo("");
+           useResidentPo.setResidentType("10");
+
+           useResidentMapper.insert(useResidentPo);
+
+       }
+
+
+
+        List<ResidentAddressPo> lists =  useResidentAddressMapper.findAllWxId(openid);
+
+
+       if(lists.size()>0){
+           response.sendRedirect(pageUrl+"?openId="+openid+"&nickname="+nickName+"&headimgurl="+headimgurl);
+       }else{
+           response.sendRedirect(pageUrl1+"?openId="+openid+"&nickname="+nickName+"&headimgurl="+headimgurl);
+       }
+
+
+
+
+
         //回调显示页面
-        response.sendRedirect(pageUrl+"?openId="+openid);
+        //response.sendRedirect(pageUrl+"?openId="+openid+"&nickname="+nickName+"&headimgurl="+headimgurl);
 
         //return  infoResult;
 
@@ -109,7 +177,7 @@ public class WxController {
         String url ="https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +appid+
                 "&redirect_uri=" + URLEncoder.encode(backUrl,"UTF-8")+
                 "&response_type=code" +
-                "&scope=snsapi_base" +
+                "&scope=snsapi_userinfo" +
                 "&state=STATE#wechat_redirect";
         response.sendRedirect(url);
         // return  url;
@@ -131,14 +199,61 @@ public class WxController {
         Map<String,Object> data = JSONObject.parseObject(result);
         String openid=data.get("openid").toString();
         String token=data.get("access_token").toString();
+
         //获取信息
         String infoUrl="https://api.weixin.qq.com/sns/userinfo?access_token=" +token+
                 "&openid=" +openid+
                 "&lang=zh_CN";
         String infoResult = HttpClientManager.getUrlData(infoUrl);
+        
+
+        Map<String,Object> data1 = JSONObject.parseObject(infoResult);
+       String nickName = data1.get("nickname").toString();
+       String headimgurl = data1.get("headimgurl").toString();
 
         //回调显示页面
-        response.sendRedirect(authPageUrl+"?openId="+openid);
+        //response.sendRedirect(authPageUrl+"?openId="+openid+"&nickname="+nickName+"&headimgurl="+headimgurl);
+        //判断wxid是否存在
+               UseResidentPo po =  useResidentMapper.findWxId(openid);
+               if(po !=null){
+
+               }else{
+
+                   UseResidentPo useResidentPo = new UseResidentPo();
+                   useResidentPo.setId(ToolUtils.getUUID());
+                   useResidentPo.setName(nickName);
+                   useResidentPo.setImgUrl(headimgurl);
+                   useResidentPo.setCreateTime(new Date());
+                   useResidentPo.setState("10");
+                   useResidentPo.setWxId(openid);
+                   useResidentPo.setMobile("");
+                   useResidentPo.setSalt("");
+                   useResidentPo.setPassword("");
+                   useResidentPo.setClientNumber("");
+                   useResidentPo.setClientPwd("");
+                   useResidentPo.setLoginToken("");
+                   useResidentPo.setOpenPwd("");
+                   useResidentPo.setLastTime(new Date());
+                   useResidentPo.setRemark("");
+                   useResidentPo.setIdentityId("");
+                   useResidentPo.setIdentityNo("");
+                   useResidentPo.setResidentType("10");
+
+                   useResidentMapper.insert(useResidentPo);
+
+               }
+
+
+
+                List<ResidentAddressPo> lists =  useResidentAddressMapper.findAllWxId(openid);
+
+
+               if(lists.size()>0){
+                   response.sendRedirect(pageUrl+"?openId="+openid+"&nickname="+nickName+"&headimgurl="+headimgurl);
+               }else{
+                   response.sendRedirect(pageUrl1+"?openId="+openid+"&nickname="+nickName+"&headimgurl="+headimgurl);
+               }
+
 
         //return  infoResult;
 

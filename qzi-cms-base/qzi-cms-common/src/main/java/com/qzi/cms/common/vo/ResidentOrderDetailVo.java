@@ -23,7 +23,16 @@ public class ResidentOrderDetailVo {
     private String state;
     private Date createTime;
     private List<OrderDatailListVo> detailList;
+    private List<ResidentOrderDetailVo> detailLists;
 
+
+    public List<ResidentOrderDetailVo> getDetailLists() {
+        return detailLists;
+    }
+
+    public void setDetailLists(List<ResidentOrderDetailVo> detailLists) {
+        this.detailLists = detailLists;
+    }
 
     public List<OrderDatailListVo> getDetailList() {
         return detailList;
