@@ -26,10 +26,7 @@ import java.util.List;
  */
 public interface UseResidentOrderMapper extends BaseMapper<ResidentOrderPo>{
 
-	/**
-	 * @param rwoBounds
-	 * @return
-	 */
+
 
 	public List<ResidentOrderVo> findAll(@Param("startRow")int startRow,@Param("pageSize")int pageSize,@Param("model") ResidentOrderVo vo);
 
@@ -58,6 +55,9 @@ public interface UseResidentOrderMapper extends BaseMapper<ResidentOrderPo>{
 
 	@Update("update use_resident_order set sellPrice =#{sellPrice} where id = #{id}")
 	void updateSellprice(@Param("sellPrice") String sellPrice,@Param("id") String id);
+
+	@Update("update use_resident_order set sellPrice =#{sellPrice},type=#{type} where id = #{id}")
+	void updateSellprice1(@Param("sellPrice") String sellPrice,@Param("type") String type,@Param("id") String id);
 
 
 	@Update("update use_resident_order set type =#{type} where id = #{id}")

@@ -93,6 +93,21 @@ public class UseResidentOrderController {
         return respBody;
     }
 
+    @PostMapping("/updatesell")
+    @SystemControllerLog(description="修改订单设置")
+    public RespBody updatesell(@RequestBody ResidentOrderPo residentOrderPo){
+        RespBody respBody = new RespBody();
+        try {
+            useResidentOrderMapper.updateSellprice1(residentOrderPo.getSellprice(),residentOrderPo.getType(),residentOrderPo.getId());
+            respBody.add(RespCodeEnum.SUCCESS.getCode(), "修改订单保存成功");
+        } catch (Exception ex) {
+            respBody.add(RespCodeEnum.ERROR.getCode(), "修改订单保存失败");
+            LogUtils.error("修改订单保存失败！",ex);
+        }
+        return respBody;
+    }
+
+
     
     @PostMapping("/delete")
     @SystemControllerLog(description="删除订单设置")

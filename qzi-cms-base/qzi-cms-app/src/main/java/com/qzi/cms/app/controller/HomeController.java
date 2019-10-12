@@ -73,14 +73,22 @@ public class HomeController {
 
     public  DatagramSocket  socket = null;
 
-    
+    //跳转详情url
+    //String url = "http://testhome.umo119.com/threeCarsOne/userorderDetail.html?ids=";
+    //用户跳转详情界面
+    //String url1 = "http://192.168.1.7:8848/threeCarsPage/threeCarsOne/userorderDetail.html?ids=";
+    String url1 = "http://testhome.umo119.com/threeCarsOne/userorderDetail.html?ids=";
+
+    //车夫跳转详情界面
+    //String url2 = "http://192.168.1.7:8848/threeCarsPage/threeCarsOne/orderDetail.html?ids=";
+    String url2 = "http://testhome.umo119.com/threeCarsOne/orderDetail.html?ids=";
 
 
 
 
 
-       private   String appid = "wx23bfac0f706f04ac";
-       private   String appsecret = "098f8f3795cc7d4c2e51ecc95bf88b41";
+       private   String appid = "wx64a68f7e23549c98";
+       private   String appsecret = "2767433c1e4d0c888d30c03329ee711e";
 
 
 
@@ -331,10 +339,32 @@ public class HomeController {
 
          ResidentAddressPo residentAddressPo =  useResidentAddressMapper.findOne(vo.getAddressId());
 
+         UseCommunityPo useCommunityPo = new UseCommunityPo();
+
+         UseResidentPo useResidentPo = new UseResidentPo();
+
+
+
+           useResidentMapper.findId(useCommunityPo.getResidentId());
+
+         if(residentAddressPo !=null){
+             useCommunityPo =  useCommunityMapper.findCityId(residentAddressPo.getCountry(),residentAddressPo.getTown());
+            if(useCommunityPo!=null){
+                useResidentPo = useResidentMapper.findId(useCommunityPo.getResidentId());
+            }
+         }
+
+
+
           ResidentOrderPo po = new ResidentOrderPo();
 
+
+         String orderId = new String();
+         //生成时间戳
+         orderId = new Date().getTime()+"";
+
          if(residentAddressPo!=null){
-             po.setId(ToolUtils.getUUID());
+             po.setId(orderId);
 
 
              //ResidentOrderPo ucPo = YBBeanUtils.copyProperties(vo, ResidentOrderPo.class);
@@ -345,12 +375,48 @@ public class HomeController {
              po.setWxId(vo.getWxId());
              po.setAddressId(vo.getAddressId());
              po.setWeight(vo.getWeight());
-             po.setCarId("");
+             po.setCarId(useResidentPo.getWxId());
              po.setSellprice("0");
              po.setType(vo.getType());
              po.setBuyprice("0");
 
              useResidentOrderMapper.insert(po);
+
+
+
+             WxMessage wx = new WxMessage();
+
+             WxContent content = new WxContent();
+
+
+
+             content.setContent("订单提交成功提醒\n 订单编号:"+orderId+"\n上门预计时间:\n"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss" ).format(po.getDoorTime())+"\n<a href='"+url1+orderId+"'>点击查看详情</a>");
+             System.out.print("");
+             wx.setTouser(vo.getWxId());
+             wx.setMsgtype("text");
+             wx.setText(content);
+
+             String url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+redisService.getString("access_token");
+             System.out.println("test"+ JSON.toJSONString(wx)) ;
+             HttpClientManager.postUrlData(url,JSON.toJSONString(wx));
+
+
+
+             WxMessage wx1 = new WxMessage();
+
+             WxContent content1 = new WxContent();
+             content1.setContent("确认订单提醒\n 订单编号:"+orderId+"\n上门预计时间:\n"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss" ).format(po.getDoorTime())+"\n<a href='"+url2+orderId+"'>点击查看详情</a>");
+             System.out.print("");
+             wx1.setTouser(useResidentPo.getWxId());
+             wx1.setMsgtype("text");
+             wx1.setText(content1);
+
+             String url1 = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+redisService.getString("access_token");
+             System.out.println("test"+ JSON.toJSONString(wx1)) ;
+             HttpClientManager.postUrlData(url1,JSON.toJSONString(wx1));
+
+
+
          }
 
             respBody.add(RespCodeEnum.SUCCESS.getCode(), "订单提交成功");
@@ -687,7 +753,7 @@ public class HomeController {
               public void run() {
                     System.out.println("assess_token:"+getAccessToken()) ;
               }
-            }, 1000,7000000);// 设定指定的时间time,此处为2000毫秒
+            }, 1000,1200000);// 设定指定的时间time,此处为2000毫秒
 
 
 
@@ -727,7 +793,7 @@ public class HomeController {
 
                 JSONObject pa=JSONObject.parseObject(result);
                 if(pa  !=null){
-                    redisService.putString("access_token",pa.getString("access_token") , 7000).equalsIgnoreCase("ok");
+                    redisService.putString("access_token",pa.getString("access_token") , 1200).equalsIgnoreCase("ok");
                 }else{
 
                 }

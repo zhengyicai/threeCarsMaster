@@ -25,7 +25,7 @@
 				and o.wxId = #{model.wxId}
 			</if>
 			<if test="model.isError != null and model.isError !=''">
-				and (o.type = '40' or o.type = '30' or o.type = '50')
+				and (o.type = '40' or o.type = '30' or o.type = '50' or o.type = '60')
 			</if>
 			<if test="model.type != null and model.type !=''">
 				and o.type = #{model.type}
@@ -56,7 +56,7 @@
 						and o.wxId = #{model.wxId}
 					</if>
 					<if test="model.isError != null and model.isError !=''">
-						and (o.type = '40' or o.type = '30' or o.type = '50')
+						and (o.type = '40' or o.type = '30' or o.type = '50' or o.type = '60')
 					</if>
 					<if test="model.type != null and model.type !=''">
 						and o.type = #{model.type}

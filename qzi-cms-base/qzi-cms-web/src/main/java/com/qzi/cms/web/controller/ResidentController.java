@@ -9,6 +9,8 @@ package com.qzi.cms.web.controller;
 
 import javax.annotation.Resource;
 
+import com.qzi.cms.common.po.UseResidentPo;
+import com.qzi.cms.common.vo.SysParameterVo;
 import com.qzi.cms.server.mapper.*;
 import com.qzi.cms.server.service.common.CommonService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -116,6 +118,22 @@ public class ResidentController {
 		try {
 			//保存返回数据
 			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有住户数据成功", useResidentMapper.findType("20"));
+			//保存分页对象
+
+		} catch (Exception ex) {
+			respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有住户数据失败");
+			LogUtils.error("查找所有住户数据失败！",ex);
+		}
+		return respBody;
+	}
+
+	@PostMapping("/updateCars")
+	public RespBody updateCars(@RequestBody UseResidentPo useResidentPo){
+		RespBody respBody = new RespBody();
+		try {
+			//保存返回数据
+			useResidentMapper.updateCars(useResidentPo.getId(),useResidentPo.getResidentType());
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "修改车夫状态成功");
 			//保存分页对象
 
 		} catch (Exception ex) {
