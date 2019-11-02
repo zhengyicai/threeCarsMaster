@@ -12,6 +12,9 @@
    				<bind name="pun" value="'%'+_parameter.criteria+'%'"/>
    				and (ur.name like #{pun} or ur.mobile like #{pun})
    			</if>
+
+
+
    		</where>
    		order by createTime desc
    	</select>
@@ -19,13 +22,19 @@
    <!-- 条件分页查询 -->
       <select id="residentList" resultType="UseResidentVo" parameterType="String">
 
-           select * from use_resident ur
-      		<where>
+		  select ur.*,(select contactName from use_resident_address a  where a.type ='10' and a.wxId = ur.wxId) as definedName,(select contactMobile from use_resident_address a  where a.type ='10' and a.wxId = ur.wxId) as definedMobile, (select detail from use_resident_address a  where a.type ='10' and a.wxId = ur.wxId) as definedDetail,
+		  (select city from use_resident_address a  where a.type ='10' and a.wxId = ur.wxId) as definedCity,(select country from use_resident_address a  where a.type ='10' and a.wxId = ur.wxId) as definedCountry,(select town from use_resident_address a  where a.type ='10' and a.wxId = ur.wxId) as definedTown
+		  from use_resident ur
+		  <where>
       		    1=1
       			<if test="criteria != null and criteria !=''">
       				<bind name="pun" value="'%'+_parameter.criteria+'%'"/>
       				and (ur.name like #{pun} or ur.mobile like #{pun})
       			</if>
+				<if test="type != null and type !=''">
+					and ur.residentType = #{type}
+				</if>
+
       		</where>
       		order by createTime desc
       	</select>
@@ -39,6 +48,9 @@
      				<bind name="pun" value="'%'+_parameter.criteria+'%'"/>
      				and (ur.name like #{pun} or ur.mobile like #{pun})
      			</if>
+				<if test="type != null and type !=''">
+					and ur.residentType = #{type}
+				</if>
      		</where>
      	</select>
 
@@ -53,6 +65,8 @@
    				<bind name="pun" value="'%'+_parameter.criteria+'%'"/>
    				and (ur.name like #{pun} or ur.mobile like #{pun})
    			</if>
+
+
    		</where>
    	</select>
 

@@ -60,7 +60,7 @@ public class WxController {
 
 
 
-    private String pageUrl2 = "http://testhome.umo119.com/threeCarsOne/manage.html";  //设置返回页面
+    private String pageUrl2 = "http://testhome.umo119.com/threeCarsOne/tabs.html";  //设置返回页面
     private String pageUrl22 = "http://testhome.umo119.com/threeCarsOne/setting.html";  //设置返回页面
 
 
@@ -377,6 +377,69 @@ public class WxController {
         }else{
             response.sendRedirect(pageUrl22+"?openId="+openid+"&nickname="+nickName+"&headimgurl="+headimgurl);
         }
+
+
+
+
+
+
+
+    }
+
+
+    @RequestMapping("settingInit.do")
+    public void  settingInit(HttpServletRequest request, HttpServletResponse response)  throws  Exception {
+        //回调地址,要跟下面的地址能调通(getWechatGZAccessToken.do)
+        String backUrl=url+"/app/wx/getWechatGZAccessTokenSetting.do";
+
+
+
+        /**
+         *这儿一定要注意！！首尾不能有多的空格（因为直接复制往往会多出空格），其次就是参数的顺序不能变动
+         **/
+        //AuthUtil.APPID微信公众号的appId   scope是否需要授权用户信息   snsapi_base  只获取openId ，snsapi_userinfo：获取用户其他信息
+        String url ="https://open.weixin.qq.com/connect/oauth2/authorize?appid=" +appid+
+                "&redirect_uri=" + URLEncoder.encode(backUrl,"UTF-8")+
+                "&response_type=code" +
+                "&scope=snsapi_userinfo" +
+                "&state=STATE#wechat_redirect";
+        response.sendRedirect(url);
+        // return  url;
+    }
+
+
+
+    @RequestMapping("getWechatGZAccessTokenSetting.do")
+    public void getWechatGZAccessTokenSetting(HttpServletRequest request,HttpServletResponse response) throws Exception{
+        //微信公众号的APPID和APPSECRET
+        String code=request.getParameter("code");
+
+        String url="https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + appid+
+                "&secret=" +appsecret+
+                "&code=" +code+
+                "&grant_type=authorization_code";
+        String result = HttpClientManager.getUrlData(url);
+
+        Map<String,Object> data = JSONObject.parseObject(result);
+        String openid=data.get("openid").toString();
+        String token=data.get("access_token").toString();
+
+
+        //获取信息
+        String infoUrl="https://api.weixin.qq.com/sns/userinfo?access_token=" +token+
+                "&openid=" +openid+
+                "&lang=zh_CN";
+        String infoResult = HttpClientManager.getUrlData(infoUrl);
+
+
+        Map<String,Object> data1 = JSONObject.parseObject(infoResult);
+        String nickName = data1.get("nickname").toString();
+        String headimgurl = data1.get("headimgurl").toString();
+
+
+
+        response.sendRedirect(pageUrl22+"?openId="+openid+"&nickname="+nickName+"&headimgurl="+headimgurl);
+
 
 
 

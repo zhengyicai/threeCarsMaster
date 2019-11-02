@@ -103,6 +103,35 @@ public class UseResidentPo implements Serializable{
 
 	private String  residentType;
 
+	private String userName;
+
+	private String card;
+	private String address;
+
+	public String getCard() {
+		return card;
+	}
+
+	public void setCard(String card) {
+		this.card = card;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
 	public String getResidentType() {
 		return residentType;
 	}

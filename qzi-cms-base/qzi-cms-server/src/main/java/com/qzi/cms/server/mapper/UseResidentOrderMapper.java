@@ -30,12 +30,20 @@ public interface UseResidentOrderMapper extends BaseMapper<ResidentOrderPo>{
 
 	public List<ResidentOrderVo> findAll(@Param("startRow")int startRow,@Param("pageSize")int pageSize,@Param("model") ResidentOrderVo vo);
 
-	
+
+	@Select("select *,r.name as carName,r.mobile as carMobile from use_resident_order o left join use_resident_address a on o.addressId = a.id left join use_resident r on r.id = o.carId where 1= 1 and (DATEDIFF(o.doorTime,NOW()) <= 0 AND DATEDIFF(o.doorTime,NOW())>-30) order by o.doorTime desc")
+	public  List<ResidentOrderVo> findAllDownLoad();
+
+
+	public List<ResidentOrderVo> findAllDay(@Param("startRow")int startRow,@Param("pageSize")int pageSize,@Param("model") ResidentOrderVo vo);
+
+
 	/**
 	 * @return
 	 */
 	
 	public long findCount(@Param("model") ResidentOrderVo vo);
+	public long findCountDay(@Param("model") ResidentOrderVo vo);
 
 	@Select("select * from use_order_detail where orderId = #{orderId}")
 	public List<ResidentOrderDetailPo> findRecord(@Param("orderId") String orderId);

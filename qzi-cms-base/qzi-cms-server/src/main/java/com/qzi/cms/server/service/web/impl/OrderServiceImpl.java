@@ -51,6 +51,17 @@ public class OrderServiceImpl implements OrderService {
 		return useResidentOrderMapper.findAll(startRow,pageSize,vo);
 	}
 
+	@Override
+	public List<ResidentOrderVo> findAllDay(Paging paging, ResidentOrderVo vo) throws Exception {
+		int startRow=0;int pageSize=0;
+		if(null!=paging){
+			startRow=(paging.getPageNumber()>0)?(paging.getPageNumber()-1)*paging.getPageSize():0;
+			pageSize=paging.getPageSize();
+		}else{
+			pageSize=Integer.MAX_VALUE;
+		}
+		return useResidentOrderMapper.findAllDay(startRow,pageSize,vo);
+	}
 
 
 	@Override
@@ -83,6 +94,11 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public long findCount(ResidentOrderVo vo) {
 		return useResidentOrderMapper.findCount(vo);
+	}
+
+	@Override
+	public long findCountDay(ResidentOrderVo vo) {
+		return useResidentOrderMapper.findCountDay(vo);
 	}
 
 	@Override

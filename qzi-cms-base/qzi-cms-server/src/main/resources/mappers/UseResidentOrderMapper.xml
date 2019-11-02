@@ -39,6 +39,42 @@
 		limit #{startRow}, #{pageSize};
 	</select>
 
+
+	<select id="findAllDay" resultType="ResidentOrderVo" parameterType="String">
+		select *,r.name as carName,r.mobile as carMobile from use_resident_order o left join use_resident_address a on o.addressId = a.id left join use_resident r on r.id = o.carId
+		<where>
+			1=1
+
+
+            <if test="model.country != null and model.country !=''">
+				and o.country = #{model.country}
+			</if>
+			<if test="model.city != null and model.city !=''">
+				and o.city = #{model.city}
+			</if>
+			<if test="model.town != null and model.town !=''">
+				and o.town = #{model.town}
+			</if>
+			<if test="model.wxId != null and model.wxId !=''">
+				and o.wxId = #{model.wxId}
+			</if>
+			<if test="model.isError != null and model.isError !=''">
+				and (o.type = '40' or o.type = '30' or o.type = '50' or o.type = '60')
+			</if>
+			<if test="model.type != null and model.type !=''">
+				and o.type = #{model.type}
+			</if>
+
+			<if test="model.today != null and model.today !=''">
+				and TO_DAYS(o.createTime) = TO_DAYS(now())
+			</if>
+			and ((DATEDIFF(o.doorTime,NOW()) &lt;= 0 AND DATEDIFF(o.doorTime,NOW())>-5)  or (DATEDIFF(o.doorTime,NOW()) &lt; 3 and  DATEDIFF(o.doorTime,NOW())>=0))
+
+		</where>
+		order by o.createTime desc
+		limit #{startRow}, #{pageSize};
+	</select>
+
 	<select id="findCount" resultType="long" parameterType="String">
 		select count(1) from use_resident_order o left join use_resident_address a on o.addressId = a.id
 				<where>
@@ -66,5 +102,36 @@
 						</if>
 				</where>
 				order by o.createTime desc
+	</select>
+
+	<select id="findCountDay" resultType="long" parameterType="String">
+		select count(1) from use_resident_order o left join use_resident_address a on o.addressId = a.id
+		<where>
+			1=1
+			<if test="model.country != null and model.country !=''">
+				and o.country = #{model.country}
+			</if>
+			<if test="model.city != null and model.city !=''">
+				and o.city = #{model.city}
+			</if>
+			<if test="model.town != null and model.town !=''">
+				and o.town = #{model.town}
+			</if>
+			<if test="model.wxId != null and model.wxId !=''">
+				and o.wxId = #{model.wxId}
+			</if>
+			<if test="model.isError != null and model.isError !=''">
+				and (o.type = '40' or o.type = '30' or o.type = '50' or o.type = '60')
+			</if>
+			<if test="model.type != null and model.type !=''">
+				and o.type = #{model.type}
+			</if>
+			<if test="model.today != null and model.today !=''">
+				and TO_DAYS(o.createTime) = TO_DAYS(now())
+			</if>
+			and ((DATEDIFF(o.doorTime,NOW()) &lt;= 0 AND DATEDIFF(o.doorTime,NOW())>-5)  or (DATEDIFF(o.doorTime,NOW()) &lt; 3 and  DATEDIFF(o.doorTime,NOW())>=0))
+
+		</where>
+		order by o.createTime desc
 	</select>
 </mapper>

@@ -85,7 +85,7 @@ public interface UseCommunityMapper extends BaseMapper<UseCommunityPo>{
 	public List<UseCommunityPo> findAllCom();
 
 
-	@Select("select distinct city from use_community")
+	@Select("select distinct city from use_community where state = '10'")
 	public  List<String> findCity();
 
 
@@ -96,13 +96,13 @@ public interface UseCommunityMapper extends BaseMapper<UseCommunityPo>{
 	public  List<String> findAddress(@Param("city") String  city);
 
 
-	@Select("select DISTINCT area,city from use_community ")
+	@Select("select DISTINCT area,city from use_community where state = '10' ")
 	public  List<UseCommunityPo> findAreas();
 
-	@Select("select DISTINCT address,area from use_community ")
+	@Select("select DISTINCT address,area from use_community where state = '10' ")
 	public  List<UseCommunityPo> findAddresss();
 
-	@Select("SELECT * from use_community where area = #{area} and address=#{address} limit 1")
+	@Select("SELECT * from use_community where area = #{area} and address=#{address} and state = '10' limit 1")
 	public UseCommunityPo findCityId(@Param("area") String  area,@Param("address") String  address);
 
 

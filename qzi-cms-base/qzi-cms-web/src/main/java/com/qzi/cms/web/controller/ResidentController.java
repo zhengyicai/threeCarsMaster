@@ -44,6 +44,9 @@ public class ResidentController {
 	@Resource
 	private UseResidentMapper useResidentMapper;
 
+	@Resource
+	private UseResidentAddressMapper useResidentAddressMapper;
+
 
 
 
@@ -88,6 +91,23 @@ public class ResidentController {
 	}
 
 
+	@GetMapping("/findSelectAll")
+	public RespBody findSelectAll(String mobile){
+		RespBody respBody = new RespBody();
+		try {
+			//保存返回数据
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有住户数据成功", useResidentAddressMapper.findAllSelect(mobile));
+			//保存分页对象
+
+
+		} catch (Exception ex) {
+			respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有住户数据失败");
+			LogUtils.error("查找所有住户数据失败！",ex);
+		}
+		return respBody;
+	}
+
+
 	/**
 	 * 2018-11-20 1.0.0
 	 * @param paging
@@ -96,13 +116,13 @@ public class ResidentController {
 	 */
 
 	@GetMapping("/residentList")
-	public RespBody residentList(Paging paging,String criteria){
+	public RespBody residentList(Paging paging,String criteria,String type){
 		RespBody respBody = new RespBody();
 		try {
 			//保存返回数据
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有住户数据成功", residentService.residentList(paging,criteria));
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有住户数据成功", residentService.residentList(paging,criteria,type));
 			//保存分页对象
-			paging.setTotalCount(residentService.residentCount(criteria));
+			paging.setTotalCount(residentService.residentCount(criteria,type));
 			respBody.setPage(paging);
 		} catch (Exception ex) {
 			respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有住户数据失败");
@@ -132,8 +152,8 @@ public class ResidentController {
 		RespBody respBody = new RespBody();
 		try {
 			//保存返回数据
-			useResidentMapper.updateCars(useResidentPo.getId(),useResidentPo.getResidentType());
-			respBody.add(RespCodeEnum.SUCCESS.getCode(), "修改车夫状态成功");
+			useResidentMapper.updateCars(useResidentPo.getId(),useResidentPo.getResidentType(),useResidentPo.getMobile(),useResidentPo.getUserName(),useResidentPo.getCard(),useResidentPo.getAddress());
+			respBody.add(RespCodeEnum.SUCCESS.getCode(), "修改收纸哥状态成功");
 			//保存分页对象
 
 		} catch (Exception ex) {

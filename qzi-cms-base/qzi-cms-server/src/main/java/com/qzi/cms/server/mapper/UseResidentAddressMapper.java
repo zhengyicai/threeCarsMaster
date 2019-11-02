@@ -9,9 +9,11 @@ package com.qzi.cms.server.mapper;
 
 import com.qzi.cms.common.po.ResidentAddressPo;
 import com.qzi.cms.common.po.ResidentOrderDetailPo;
+import com.qzi.cms.common.vo.ResidentAddressVo;
 import com.qzi.cms.server.base.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
@@ -45,7 +47,16 @@ public interface UseResidentAddressMapper extends BaseMapper<ResidentAddressPo>{
 
 	@Select("select * from use_resident_address where id = #{id}")
 	public ResidentAddressPo findOne(@Param("id") String id);
-	
+
+
+	@Select("select a.*,r.name as name,r.id as residentId from use_resident_address a  left join use_resident r  on a.wxId = r.wxId  where a.state='10' and   a.type='10' and (a.contactName like concat('%',#{mobile},'%') or  a.contactMobile like concat('%',#{mobile},'%') or r.name like concat('%',#{mobile},'%')) ")
+	public  List<ResidentAddressVo> findAllSelect(@Param("mobile") String mobile);
+
+	@Update("update use_resident_address set town = #{newDetail} where town = #{town} and country=#{country}")
+	public void updateDetail(@Param("country") String country,@Param("town") String town,@Param("newDetail") String newDetail);
+
+
+
 
 
 

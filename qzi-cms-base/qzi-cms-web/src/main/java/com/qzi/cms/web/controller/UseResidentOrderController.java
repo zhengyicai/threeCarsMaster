@@ -5,18 +5,22 @@ import com.qzi.cms.common.annotation.SystemControllerLog;
 import com.qzi.cms.common.enums.RespCodeEnum;
 import com.qzi.cms.common.po.GoodsPo;
 import com.qzi.cms.common.po.GoodsRecordPo;
+import com.qzi.cms.common.po.ResidentOrderDetailPo;
 import com.qzi.cms.common.po.ResidentOrderPo;
 import com.qzi.cms.common.resp.Paging;
 import com.qzi.cms.common.resp.RespBody;
 import com.qzi.cms.common.util.LogUtils;
 import com.qzi.cms.common.vo.ResidentOrderVo;
+import com.qzi.cms.server.mapper.UseOrderDetailMapper;
 import com.qzi.cms.server.mapper.UseResidentOrderMapper;
 import com.qzi.cms.server.service.web.GoodsRecordService;
 import com.qzi.cms.server.service.web.GoodsService;
+import com.qzi.cms.server.service.web.OrderDetailService;
 import com.qzi.cms.server.service.web.OrderService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 订单
@@ -38,6 +42,13 @@ public class UseResidentOrderController {
 
     @Resource
     private UseResidentOrderMapper useResidentOrderMapper;
+
+
+    @Resource
+    private UseOrderDetailMapper useOrderDetailMapper;
+
+    @Resource
+    private OrderDetailService orderDetailService;
 
     @GetMapping("/findAll")
     public RespBody findAll(Paging paging,String country,String city,String town){
@@ -63,6 +74,60 @@ public class UseResidentOrderController {
         }
         return respBody;
     }
+
+
+    //按天数统计商品重量
+
+    @GetMapping("/orderDetailSumFindAll")
+    public RespBody orderDetailSumFindAll(Paging paging){
+        RespBody respBody = new RespBody();
+        try {
+            //保存返回数据
+
+            respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有订单数据成功", orderDetailService.findAllSum(paging));
+            //保存分页对象
+            paging.setTotalCount(orderDetailService.findCountSum());
+            respBody.setPage(paging);
+        } catch (Exception ex) {
+            respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有订单数据失败");
+            LogUtils.error("查找所有订单数据失败！",ex);
+        }
+        return respBody;
+    }
+
+
+    //按30天的数统计商品重量
+    @GetMapping("/orderDetailSumMouthFindAll")
+    public RespBody orderDetailSumMouthFindAll(){
+        RespBody respBody = new RespBody();
+        try {
+            //保存返回数据
+
+            respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有订单数据成功", useOrderDetailMapper.findAllSumMouth());
+            //保存分页对象
+//            paging.setTotalCount(orderDetailService.findCountSum());
+//            respBody.setPage(paging);
+        } catch (Exception ex) {
+            respBody.add(RespCodeEnum.ERROR.getCode(), "查找所有订单数据失败");
+            LogUtils.error("查找所有订单数据失败！",ex);
+        }
+        return respBody;
+    }
+
+    @GetMapping("/findAllDownLoad")
+    public RespBody findAllDownLoad() {
+        RespBody respBody = new RespBody();
+
+        List<ResidentOrderVo> list =  useResidentOrderMapper.findAllDownLoad();
+
+
+
+        respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有订单数据成功", list);
+
+        return respBody;
+
+    }
+
 
     @PostMapping("/add")
     @SystemControllerLog(description="新增订单")
@@ -99,6 +164,22 @@ public class UseResidentOrderController {
         RespBody respBody = new RespBody();
         try {
             useResidentOrderMapper.updateSellprice1(residentOrderPo.getSellprice(),residentOrderPo.getType(),residentOrderPo.getId());
+            respBody.add(RespCodeEnum.SUCCESS.getCode(), "修改订单保存成功");
+        } catch (Exception ex) {
+            respBody.add(RespCodeEnum.ERROR.getCode(), "修改订单保存失败");
+            LogUtils.error("修改订单保存失败！",ex);
+        }
+        return respBody;
+    }
+
+
+
+    @PostMapping("/updateFinishPrice")
+    @SystemControllerLog(description="修改订单详情价格")
+    public RespBody updateFinishPrice(@RequestBody ResidentOrderDetailPo residentOrderDetailPo){
+        RespBody respBody = new RespBody();
+        try {
+            useOrderDetailMapper.update1(residentOrderDetailPo.getId(),residentOrderDetailPo.getSellWeight());
             respBody.add(RespCodeEnum.SUCCESS.getCode(), "修改订单保存成功");
         } catch (Exception ex) {
             respBody.add(RespCodeEnum.ERROR.getCode(), "修改订单保存失败");

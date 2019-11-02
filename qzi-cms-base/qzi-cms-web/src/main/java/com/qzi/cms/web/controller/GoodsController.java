@@ -72,6 +72,21 @@ public class GoodsController {
         return respBody;
     }
 
+    //获取当前货品价格
+    @GetMapping("/goodsList")
+    public RespBody goodsList(){
+        RespBody respBody = new RespBody();
+        try {
+            //保存返回数据
+            respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取用户管理机成功", useGoodsMapper.findAllApp());
+        } catch (Exception ex) {
+            respBody.add(RespCodeEnum.ERROR.getCode(), "获取用户管理机失败");
+        }
+        return respBody;
+    }
+
+
+
     @PostMapping("/update")
     @SystemControllerLog(description="修改货品设置")
     public RespBody update(@RequestBody GoodsPo goodsPo){
@@ -90,6 +105,7 @@ public class GoodsController {
             goodsPo1.setName(goodsPo.getName());
             goodsPo1.setPrice(goodsPo.getPrice());
             goodsPo1.setState(goodsPo.getState());
+            goodsPo1.setRemark(goodsPo.getRemark());
             useGoodsMapper.updatePrice(goodsPo1);
 
             //增加一个记录

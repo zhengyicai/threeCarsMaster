@@ -13,7 +13,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.qzi.cms.common.vo.*;
-import com.qzi.cms.server.mapper.SysCityMapper;
+import com.qzi.cms.server.mapper.*;
 import com.qzi.cms.server.service.common.CommonService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
@@ -24,9 +24,6 @@ import com.qzi.cms.common.po.UseCommunityUserPo;
 import com.qzi.cms.common.resp.Paging;
 import com.qzi.cms.common.util.ToolUtils;
 import com.qzi.cms.common.util.YBBeanUtils;
-import com.qzi.cms.server.mapper.SysUserMapper;
-import com.qzi.cms.server.mapper.UseCommunityMapper;
-import com.qzi.cms.server.mapper.UseCommunityUserMapper;
 import com.qzi.cms.server.service.web.CommunityService;
 
 /**
@@ -48,6 +45,10 @@ public class CommunityServiceImpl implements CommunityService {
 
 	@Resource
 	private SysCityMapper cityMapper;
+
+	@Resource
+	private UseResidentAddressMapper useResidentAddressMapper;
+
 	@Override
 	public List<UseCommunityVo> findAll(Paging paging) throws Exception  {
 		SysUserVo userVo = commonService.findUser();
@@ -130,8 +131,17 @@ public class CommunityServiceImpl implements CommunityService {
 
 	@Override
 	public void update(UseCommunityVo communityVo) throws Exception {
+
+
+
 		UseCommunityPo raPo = YBBeanUtils.copyProperties(communityVo, UseCommunityPo.class);
-		communityMapper.updateByPrimaryKey(raPo);
+		UseCommunityPo useCommunityPo = communityMapper.findOne(communityVo.getId());
+		if(useCommunityPo!=null){
+			communityMapper.updateByPrimaryKey(raPo);
+			useResidentAddressMapper.updateDetail(useCommunityPo.getArea(),useCommunityPo.getAddress(),raPo.getAddress());
+		}
+
+
 	}
 
 

@@ -35,12 +35,12 @@ public interface UseGoodsMapper extends BaseMapper<GoodsPo>{
 	@Select("select * from use_goods order by createTime desc")
 	public List<GoodsPo> findAll(RowBounds rwoBounds);
 
-	@Select("select * from use_goods order by price  asc")
+	@Select("select * from use_goods where state= '10' order by price  asc")
 	public List<GoodsPo> findAllApp();
 
 
 
-	@Update("update use_goods set name=#{model.name} , price = #{model.price} ,updateTime = #{model.updateTime} where id = #{model.id}")
+	@Update("update use_goods set name=#{model.name} ,state = #{model.state}, price = #{model.price} ,updateTime = #{model.updateTime} where id = #{model.id}")
 	public void updatePrice(@Param("model") GoodsPo po);
 
     @Delete("delete from use_goods where id = #{model.id}")

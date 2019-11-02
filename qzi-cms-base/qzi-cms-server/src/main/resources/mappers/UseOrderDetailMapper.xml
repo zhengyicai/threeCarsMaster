@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qzi.cms.server.mapper.UseOrderDetailMapper">
+   <!-- 条件分页查询
+     private String city;
+    private String country;
+    private String town;
+
+    -->
+	<select id="findAllSum" resultType="ResidentOrderDetailSumVo" parameterType="Integer">
+
+		select substring(createTime, 1, 10) as time1,
+		sum(if(goodsId='iusdjkjksdufidd21fs54',sellWeight,0)) as goods1,
+		sum(if(goodsId='dfsdfe45423223452f2df12',sellWeight,0)) as goods2,
+		sum(if(goodsId='1c68b1b17581426c9d336dc3b7f92a76',sellWeight,0)) as goods3,
+		sum(if(goodsId='ccf51efed4444a5ebdd1054800274d9c',sellWeight,0)) as goods4,
+		sum(if(goodsId='5a98098ddf914be4b2f0cbefb980e05c',sellWeight,0)) as goods5,
+		sum(if(goodsId='929f39e13d3940cb81cd3097ded956aa',sellWeight,0)) as goods6,
+		sum(if(goodsId='77ef32b25a084ea3bc6e0d1ce692fde9',sellWeight,0)) as goods7,
+		sum(if(goodsId='0f3821253e4948acb165bc5db7be4b86',sellWeight,0)) as goods8,
+		sum(if(goodsId='283457b14a2647908063e2bcd2d90e2a',sellWeight,0)) as goods9,
+		sum(if(goodsId='cf06aaa43c654805a84676ddcf0298b1',sellWeight,0)) as goods10
+		from use_order_detail  group by time1 order by time1 desc
+		limit #{startRow}, #{pageSize};
+	</select>
+
+
+
+
+	<select id="findCountSum" resultType="long" parameterType="Integer">
+		select count(1) from (select substring(createTime, 1, 10) as time1 from use_order_detail GROUP BY time1) s
+	</select>
+
+
+	<select id="findAllSumMouth" resultType="ResidentOrderDetailSumVo">
+
+		select substring(createTime, 1, 10) as time1,
+		sum(if(goodsId='iusdjkjksdufidd21fs54',sellWeight,0)) as goods1,
+		sum(if(goodsId='dfsdfe45423223452f2df12',sellWeight,0)) as goods2,
+		sum(if(goodsId='1c68b1b17581426c9d336dc3b7f92a76',sellWeight,0)) as goods3,
+		sum(if(goodsId='ccf51efed4444a5ebdd1054800274d9c',sellWeight,0)) as goods4,
+		sum(if(goodsId='5a98098ddf914be4b2f0cbefb980e05c',sellWeight,0)) as goods5,
+		sum(if(goodsId='929f39e13d3940cb81cd3097ded956aa',sellWeight,0)) as goods6,
+		sum(if(goodsId='77ef32b25a084ea3bc6e0d1ce692fde9',sellWeight,0)) as goods7,
+		sum(if(goodsId='0f3821253e4948acb165bc5db7be4b86',sellWeight,0)) as goods8,
+		sum(if(goodsId='283457b14a2647908063e2bcd2d90e2a',sellWeight,0)) as goods9,
+		sum(if(goodsId='cf06aaa43c654805a84676ddcf0298b1',sellWeight,0)) as goods10
+		from use_order_detail  group by time1 order by time1 desc
+		limit 0, 30;
+	</select>
+
+
+</mapper>

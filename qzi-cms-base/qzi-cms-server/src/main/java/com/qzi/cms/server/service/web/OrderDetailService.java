@@ -10,6 +10,7 @@ package com.qzi.cms.server.service.web;
 import com.qzi.cms.common.po.ResidentOrderDetailPo;
 import com.qzi.cms.common.po.ResidentOrderPo;
 import com.qzi.cms.common.resp.Paging;
+import com.qzi.cms.common.vo.ResidentOrderDetailSumVo;
 import com.qzi.cms.common.vo.ResidentOrderVo;
 
 import java.util.List;
@@ -29,6 +30,8 @@ public interface OrderDetailService {
 	 * @throws Exception 
 	 */
 	public List<ResidentOrderDetailPo> findAll(Paging paging) throws Exception;
+
+	public List<ResidentOrderDetailSumVo> findAllSum(Paging paging) throws Exception;
 
 	/**
 	 * 新增
@@ -55,5 +58,6 @@ public interface OrderDetailService {
 	 * @return
 	 */
 	public long findCount();
+	public long findCountSum();
 	
 }

@@ -345,12 +345,16 @@ public class HomeController {
 
 
 
-           useResidentMapper.findId(useCommunityPo.getResidentId());
+           //useResidentMapper.findId(useCommunityPo.getResidentId());
 
          if(residentAddressPo !=null){
              useCommunityPo =  useCommunityMapper.findCityId(residentAddressPo.getCountry(),residentAddressPo.getTown());
             if(useCommunityPo!=null){
                 useResidentPo = useResidentMapper.findId(useCommunityPo.getResidentId());
+            }else{
+                respBody.add(RespCodeEnum.ERROR.getCode(), "抱歉,该地区暂时无法上门收件");
+                return  respBody;
+
             }
          }
 
@@ -379,6 +383,7 @@ public class HomeController {
              po.setSellprice("0");
              po.setType(vo.getType());
              po.setBuyprice("0");
+             po.setRemark("");
 
              useResidentOrderMapper.insert(po);
 
@@ -388,32 +393,47 @@ public class HomeController {
 
              WxContent content = new WxContent();
 
-
-
-             content.setContent("订单提交成功提醒\n 订单编号:"+orderId+"\n上门预计时间:\n"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss" ).format(po.getDoorTime())+"\n<a href='"+url1+orderId+"'>点击查看详情</a>");
-             System.out.print("");
-             wx.setTouser(vo.getWxId());
-             wx.setMsgtype("text");
-             wx.setText(content);
-
-             String url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+redisService.getString("access_token");
-             System.out.println("test"+ JSON.toJSONString(wx)) ;
-             HttpClientManager.postUrlData(url,JSON.toJSONString(wx));
+             ResidentOrderVo residentOrderVo1 = new ResidentOrderVo();
+             residentOrderVo1.setId(po.getId());
+             residentOrderVo1.setWxId(po.getWxId());
+             residentOrderVo1.setDoorTime(po.getDoorTime());
+             testMessage10(residentOrderVo1);
 
 
 
-             WxMessage wx1 = new WxMessage();
+             ResidentOrderVo residentOrderVo = new ResidentOrderVo();
+             residentOrderVo.setId(po.getId());
+             residentOrderVo.setWxId(useResidentPo.getWxId());
+             residentOrderVo.setDoorTime(po.getDoorTime());
 
-             WxContent content1 = new WxContent();
-             content1.setContent("确认订单提醒\n 订单编号:"+orderId+"\n上门预计时间:\n"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss" ).format(po.getDoorTime())+"\n<a href='"+url2+orderId+"'>点击查看详情</a>");
-             System.out.print("");
-             wx1.setTouser(useResidentPo.getWxId());
-             wx1.setMsgtype("text");
-             wx1.setText(content1);
 
-             String url1 = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+redisService.getString("access_token");
-             System.out.println("test"+ JSON.toJSONString(wx1)) ;
-             HttpClientManager.postUrlData(url1,JSON.toJSONString(wx1));
+             testMessageCar10(residentOrderVo);
+
+
+//             content.setContent("订单提交成功提醒\n 订单编号:"+orderId+"\n上门预计时间:\n"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss" ).format(po.getDoorTime())+"\n<a href='"+url1+orderId+"'>点击查看详情</a>");
+//             System.out.print("");
+//             wx.setTouser(vo.getWxId());
+//             wx.setMsgtype("text");
+//             wx.setText(content);
+//
+//             String url = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+redisService.getString("access_token");
+//             System.out.println("test"+ JSON.toJSONString(wx)) ;
+//             HttpClientManager.postUrlData(url,JSON.toJSONString(wx));
+
+
+
+//             WxMessage wx1 = new WxMessage();
+//
+//             WxContent content1 = new WxContent();
+//             content1.setContent("确认订单提醒\n 订单编号:"+orderId+"\n上门预计时间:\n"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss" ).format(po.getDoorTime())+"\n<a href='"+url2+orderId+"'>点击查看详情</a>");
+//             System.out.print("");
+//             wx1.setTouser(useResidentPo.getWxId());
+//             wx1.setMsgtype("text");
+//             wx1.setText(content1);
+//
+//             String url1 = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token="+redisService.getString("access_token");
+//             System.out.println("test"+ JSON.toJSONString(wx1)) ;
+//             HttpClientManager.postUrlData(url1,JSON.toJSONString(wx1));
 
 
 
@@ -437,13 +457,74 @@ public class HomeController {
 
 
                ResidentOrderPo  po  =   useResidentOrderMapper.findId(vo.getId());
+
+               ResidentAddressPo residentAddressPo =  useResidentAddressMapper.findOne(po.getAddressId());
+
+               //UseResidentPo useResidentPo1 =   useResidentMapper.findId(vo.getCarId());
+
                if(po!=null){
 
                    po.setType(vo.getType());
-                   po.setCarId(vo.getCarId());
+                   if("30".equals(vo.getType())){
+
+                   }else{
+                       po.setCarId(vo.getCarId());
+                   }
+
+                   po.setRemark(vo.getRemark());
                    useResidentOrderMapper.updateByPrimaryKey(po);
 
                }
+
+
+               ResidentOrderPo  po22  =   useResidentOrderMapper.findId(vo.getId());
+
+
+
+
+
+               UseResidentPo useResidentPo1 = new UseResidentPo();
+               if("".equals(po22.getCarId())){
+                   useResidentPo1.setUserName("");
+                   useResidentPo1.setMobile("");
+
+               }else{
+                   useResidentPo1  =   useResidentMapper.findWxId(po22.getCarId());
+               }
+
+
+               ResidentOrderVo residentOrderVo = new ResidentOrderVo();
+               residentOrderVo.setWxId(po.getWxId());
+               residentOrderVo.setId(po.getId());
+               residentOrderVo.setDoorTime(po.getDoorTime());
+               residentOrderVo.setCarName(useResidentPo1.getUserName());
+               residentOrderVo.setCarMobile(useResidentPo1.getMobile());
+               residentOrderVo.setCity(residentAddressPo.getCity());
+               residentOrderVo.setCountry(residentAddressPo.getCountry());
+               residentOrderVo.setTown(residentAddressPo.getTown());
+               residentOrderVo.setDetail(residentAddressPo.getDetail());
+               residentOrderVo.setRemark(vo.getRemark());
+
+               if("30".equals(vo.getType())){
+                   testMessage30(residentOrderVo);
+                   if("".equals(po22.getCarId())){
+
+                   }else{
+                       //用户取消，车夫收到推送
+                       residentOrderVo.setUserId(po22.getCarId());
+                       testMessage30(residentOrderVo);
+                   }
+               }else if("20".equals(vo.getType())){
+
+                   testMessage20(residentOrderVo);
+
+
+                //车夫取消
+               }else if("60".equals(vo.getType())){
+                   residentOrderVo.setType("60");
+                   testMessage30(residentOrderVo);
+               }
+
                respBody.add(RespCodeEnum.SUCCESS.getCode(), "修改货品保存成功");
 
            } catch (Exception ex) {
@@ -480,7 +561,7 @@ public class HomeController {
               residentOrderDetailPo.setGoodsId(vo.getDetailLists().get(i).getGoodsId());
               residentOrderDetailPo.setOrderId(vo.getDetailLists().get(i).getOrderId());
               residentOrderDetailPo.setSellPrice("0");
-              residentOrderDetailPo.setSellWeight("0");
+              residentOrderDetailPo.setSellWeight(vo.getDetailLists().get(i).getBuyWeight());
               as+=Double.valueOf(vo.getDetailLists().get(i).getBuyWeight())*Double.valueOf(vo.getDetailLists().get(i).getBuyPrice());
 
               residentOrderDetailPo.setId(ToolUtils.getUUID());
@@ -496,6 +577,30 @@ public class HomeController {
             String prices =  String.format("%.2f", as);
            residentOrderPo.setBuyprice(prices);
            useResidentOrderMapper.updateByPrimaryKey(residentOrderPo);
+
+
+
+
+           ResidentAddressPo residentAddressPo =  useResidentAddressMapper.findOne(residentOrderPo.getAddressId());
+
+           ResidentOrderVo residentOrderVo = new ResidentOrderVo();
+           residentOrderVo.setId(residentOrderPo.getId());
+           residentOrderVo.setBuyprice(prices);
+           residentOrderVo.setWxId(residentOrderPo.getWxId());
+           residentOrderVo.setId(residentOrderPo.getId());
+           residentOrderVo.setDoorTime(residentOrderPo.getDoorTime());
+//           residentOrderVo.setCarName(useResidentPo1.getUserName());
+//           residentOrderVo.setCarMobile(useResidentPo1.getMobile());
+           residentOrderVo.setCity(residentAddressPo.getCity());
+           residentOrderVo.setCountry(residentAddressPo.getCountry());
+           residentOrderVo.setTown(residentAddressPo.getTown());
+           residentOrderVo.setDetail(residentAddressPo.getDetail());
+           //residentOrderVo.setRemark(vo.getRemark());
+            testMessage40(residentOrderVo);
+
+
+
+
            //useResidentOrderMapper.updateType("40",vo.getOrderId());
            respBody.add(RespCodeEnum.SUCCESS.getCode(), "新增货品保存成功");
 
@@ -528,8 +633,250 @@ public class HomeController {
         return respBody;
     }
 
+    //待接单
+    public void testMessage10(ResidentOrderVo vo) throws Exception {
+
+        RespBody respBody = new RespBody();
+        String  templeId = "EbgSMUCS2kciZqZZALFNgNIG07OxS80q0QLcDxocCYk";
+
+        WxTemplate template = new WxTemplate();
+
+        template.setUrl(url1+vo.getId());
+        template.setTouser(vo.getWxId());
+        template.setTopcolor("#000000");
+
+        template.setTemplate_id(templeId);
+        Map<String,TemplateData> m = new HashMap<String,TemplateData>();
+        TemplateData first = new TemplateData();
+        first.setColor("#000000");
+        first.setValue("您有一条新的订单");
+        m.put("first", first);
+        TemplateData keyword1 = new TemplateData();
+        keyword1.setColor("#173177");
+        keyword1.setValue(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(vo.getDoorTime()));
+        m.put("keyword1", keyword1);
+        TemplateData keyword2 = new TemplateData();
+        keyword2.setColor("#173177");
+        keyword2.setValue("待收纸哥确认订单并上门收纸");
+        m.put("keyword2", keyword2);
+
+        TemplateData remark = new TemplateData();
+        remark.setColor("#173177");
+        remark.setValue("该订单正在指定收纸哥上门收纸，如有疑问，请与我们联系");
+        m.put("remark",remark);
+
+        template.setData(m);
+
+        String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+redisService.getString("access_token");
+        System.out.println("test"+ JSON.toJSONString(template)) ;
+        HttpClientManager.postUrlData(url,JSON.toJSONString(template));
+
+    }
 
 
+    //车夫待接单
+    public void testMessageCar10(ResidentOrderVo vo) throws Exception {
+
+        RespBody respBody = new RespBody();
+        String  templeId = "EbgSMUCS2kciZqZZALFNgNIG07OxS80q0QLcDxocCYk";
+
+        WxTemplate template = new WxTemplate();
+
+        template.setUrl(url2+vo.getId());
+        template.setTouser(vo.getWxId());
+        template.setTopcolor("#000000");
+
+        template.setTemplate_id(templeId);
+        Map<String,TemplateData> m = new HashMap<String,TemplateData>();
+        TemplateData first = new TemplateData();
+        first.setColor("#000000");
+        first.setValue("您有一条新的订单,请及时确认");
+        m.put("first", first);
+        TemplateData keyword1 = new TemplateData();
+        keyword1.setColor("#173177");
+        keyword1.setValue(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(vo.getDoorTime()));
+        m.put("keyword1", keyword1);
+        TemplateData keyword2 = new TemplateData();
+        keyword2.setColor("#173177");
+        keyword2.setValue("请尽快确认并联系客户");
+        m.put("keyword2", keyword2);
+
+        TemplateData remark = new TemplateData();
+        remark.setColor("#173177");
+        remark.setValue("点击查看详情");
+        m.put("remark",remark);
+
+        template.setData(m);
+
+        String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+redisService.getString("access_token");
+        System.out.println("test"+ JSON.toJSONString(template)) ;
+        HttpClientManager.postUrlData(url,JSON.toJSONString(template));
+
+    }
+
+
+    //上门取件
+    public void testMessage20(ResidentOrderVo vo) throws Exception {
+
+        RespBody respBody = new RespBody();
+        String  templeId = "sjuSecUoe4eL1UEZNbaucXB1rURuSblUNBqtDsLeWFo";
+
+        WxTemplate template = new WxTemplate();
+
+        template.setUrl(url1+vo.getId());
+        template.setTouser(vo.getWxId());
+        template.setTopcolor("#000000");
+
+        template.setTemplate_id(templeId);
+        Map<String,TemplateData> m = new HashMap<String,TemplateData>();
+        TemplateData first = new TemplateData();
+        first.setColor("#000000");
+        first.setValue("您的订单已成功接单");
+        m.put("first", first);
+
+        TemplateData keyword1 = new TemplateData();
+        keyword1.setColor("#173177");
+        keyword1.setValue(vo.getId());
+        m.put("keyword1", keyword1);
+
+
+        TemplateData keyword2 = new TemplateData();
+        keyword2.setColor("#173177");
+        keyword2.setValue(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(vo.getDoorTime()));
+        m.put("keyword2", keyword2);
+
+
+
+        TemplateData remark = new TemplateData();
+        remark.setColor("#173177");
+        remark.setValue("收纸哥("+vo.getCarName()+vo.getCarMobile()+")即将上门收纸，请保持电话畅通");
+        m.put("remark",remark);
+
+        template.setData(m);
+
+        String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+redisService.getString("access_token");
+        System.out.println("test"+ JSON.toJSONString(template)) ;
+        HttpClientManager.postUrlData(url,JSON.toJSONString(template));
+
+    }
+
+
+    //取消订单
+    public void testMessage30(ResidentOrderVo vo) throws Exception {
+
+        RespBody respBody = new RespBody();
+        String  templeId = "q1GFGG7dxHCnctTrTY6Gv4q6B2eg-qKszmUlDtzUhXo";
+
+        WxTemplate template = new WxTemplate();
+
+        template.setUrl(url1+vo.getId());
+        template.setTouser(vo.getWxId());
+        template.setTopcolor("#000000");
+
+        template.setTemplate_id(templeId);
+        Map<String,TemplateData> m = new HashMap<String,TemplateData>();
+        TemplateData first = new TemplateData();
+        first.setColor("#000000");
+        if("60".equals(vo.getType())){
+            first.setValue("抱歉,收纸哥拒绝接单,订单已取消");
+        }else{
+            first.setValue("您的订单已取消");
+        }
+
+        m.put("first", first);
+
+
+        TemplateData orderProductPrice = new TemplateData();
+        orderProductPrice.setColor("#173177");
+        orderProductPrice.setValue("--");
+        m.put("orderProductPrice", orderProductPrice);
+
+        TemplateData orderProductName = new TemplateData();
+        orderProductName.setColor("#173177");
+        orderProductName.setValue(vo.getRemark());
+        m.put("orderProductName", orderProductName);
+
+        TemplateData orderAddress = new TemplateData();
+        orderAddress.setColor("#173177");
+        orderAddress.setValue(vo.getCity()+vo.getCountry()+vo.getTown()+vo.getDetail());
+        m.put("orderAddress", orderAddress);
+
+        TemplateData orderName = new TemplateData();
+        orderName.setColor("#173177");
+        orderName.setValue(vo.getId());
+        m.put("orderName", orderName);
+
+        TemplateData remark = new TemplateData();
+        remark.setColor("#173177");
+        remark.setValue("点击查看订单详情");
+        m.put("remark",remark);
+
+        template.setData(m);
+
+        String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+redisService.getString("access_token");
+        System.out.println("test"+ JSON.toJSONString(template)) ;
+        HttpClientManager.postUrlData(url,JSON.toJSONString(template));
+
+    }
+
+
+    //已完成订单
+    public void testMessage40(ResidentOrderVo vo) throws Exception {
+
+        RespBody respBody = new RespBody();
+        String  templeId = "NvIEqBAyO24ZtVeDpZlfiL8t1_oCFrQpR59nMjnY4-M";
+
+        WxTemplate template = new WxTemplate();
+
+        template.setUrl(url1+vo.getId());
+        template.setTouser(vo.getWxId());
+        template.setTopcolor("#000000");
+
+        template.setTemplate_id(templeId);
+        Map<String,TemplateData> m = new HashMap<String,TemplateData>();
+        TemplateData first = new TemplateData();
+        first.setColor("#000000");
+        first.setValue("您的订单已完成交易");
+        m.put("first", first);
+
+        TemplateData keyword1 = new TemplateData();
+        keyword1.setColor("#173177");
+        keyword1.setValue(vo.getId());
+        m.put("keyword1", keyword1);
+
+        TemplateData keyword2 = new TemplateData();
+        keyword2.setColor("#173177");
+        keyword2.setValue(vo.getBuyprice()+"元");
+        m.put("keyword2", keyword2);
+
+
+
+        TemplateData remark = new TemplateData();
+        remark.setColor("#173177");
+        remark.setValue("点击查看订单详情");
+        m.put("remark",remark);
+
+        template.setData(m);
+
+        String url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+redisService.getString("access_token");
+        System.out.println("test"+ JSON.toJSONString(template)) ;
+        HttpClientManager.postUrlData(url,JSON.toJSONString(template));
+
+    }
+
+
+    @PostMapping("/testMessage")
+    public RespBody testMessage(@RequestBody ResidentOrderVo vo) throws Exception {
+        RespBody respBody = new RespBody();
+        vo.setDoorTime(new Date());
+        //testMessage10(vo);
+        //testMessage20(vo);
+        testMessage30(vo);
+        return respBody;
+
+
+        // return  respBody;
+    }
 
 
 
@@ -541,15 +888,15 @@ public class HomeController {
           try {
               //保存返回数据
               ResidentOrderVo vo = new ResidentOrderVo();
-              vo.setWxId(wxId);
+              vo.setCarId(wxId);
               vo.setState(state);
               vo.setToday(today);
               vo.setIsError(isError);
               vo.setType(type);
 
-              respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有订单数据成功", orderService.findAll(paging,vo));
+              respBody.add(RespCodeEnum.SUCCESS.getCode(), "查找所有订单数据成功", orderService.findAllDay(paging,vo));
             //保存分页对象
-            paging.setTotalCount(orderService.findCount(vo));
+            paging.setTotalCount(orderService.findCountDay(vo));
             respBody.setPage(paging);
              // respBody.add(RespCodeEnum.SUCCESS.getCode(), "获取用户管理机成功", useResidentAddressMapper.findAllWxId(wxId));
           } catch (Exception ex) {
@@ -636,7 +983,7 @@ public class HomeController {
                     po.setOrderId(vo.getOrderId());
                     po.setState("10");
                     po.setSellPrice("0");
-                    po.setSellWeight("0");
+                    po.setSellWeight(vo.getDetailList().get(i).getWeight());
                     po.setCreateTime(new Date());
                     useOrderDetailMapper.insert(po);
 

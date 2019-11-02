@@ -138,6 +138,91 @@ public class UseResidentVo {
 	private String deviceId;
 
 
+	private String userName;
+
+	private String address;
+	private  String  card;
+
+	private String definedDetail;
+	private String definedMobile;
+	private String definedName;
+	private String definedCity;
+	private String definedCountry;
+	private String definedTown;
+
+
+	public String getDefinedDetail() {
+		return definedDetail;
+	}
+
+	public void setDefinedDetail(String definedDetail) {
+		this.definedDetail = definedDetail;
+	}
+
+	public String getDefinedCity() {
+		return definedCity;
+	}
+
+	public void setDefinedCity(String definedCity) {
+		this.definedCity = definedCity;
+	}
+
+	public String getDefinedCountry() {
+		return definedCountry;
+	}
+
+	public void setDefinedCountry(String definedCountry) {
+		this.definedCountry = definedCountry;
+	}
+
+	public String getDefinedTown() {
+		return definedTown;
+	}
+
+	public void setDefinedTown(String definedTown) {
+		this.definedTown = definedTown;
+	}
+
+	public String getDefinedMobile() {
+		return definedMobile;
+	}
+
+	public void setDefinedMobile(String definedMobile) {
+		this.definedMobile = definedMobile;
+	}
+
+	public String getDefinedName() {
+		return definedName;
+	}
+
+	public void setDefinedName(String definedName) {
+		this.definedName = definedName;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getCard() {
+		return card;
+	}
+
+	public void setCard(String card) {
+		this.card = card;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
 	public String getDeviceId() {
 		return deviceId;
 	}

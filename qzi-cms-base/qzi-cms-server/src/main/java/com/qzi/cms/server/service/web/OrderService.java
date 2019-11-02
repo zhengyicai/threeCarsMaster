@@ -32,6 +32,16 @@ public interface OrderService {
 	 */
 	public List<ResidentOrderVo> findAll(Paging paging,ResidentOrderVo vo) throws Exception;
 
+
+	/**
+	 * 查询前四后二的数据
+	 * @param paging
+	 * @param vo
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ResidentOrderVo> findAllDay(Paging paging,ResidentOrderVo vo) throws Exception;
+
 	/**
 	 * 新增
 	 * @param residentOrderPo
@@ -57,6 +67,9 @@ public interface OrderService {
 	 * @return
 	 */
 	public long findCount(ResidentOrderVo vo);
+
+
+	public long findCountDay(ResidentOrderVo vo);
 
 	public List<OrderSumVo> findSum(Paging paging,OrderSumVo vo) throws   Exception;
 	public long findCountSum(OrderSumVo vo);

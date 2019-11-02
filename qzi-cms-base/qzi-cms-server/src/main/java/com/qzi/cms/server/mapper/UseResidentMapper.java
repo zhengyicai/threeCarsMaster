@@ -52,7 +52,7 @@ public interface UseResidentMapper  extends BaseMapper<UseResidentPo>{
 	 * @param
 	 * @return
 	 */
-	public List<UseResidentVo> residentList(RowBounds rwoBounds,@Param("criteria") String criteria);
+	public List<UseResidentVo> residentList(RowBounds rwoBounds,@Param("criteria") String criteria,@Param("type") String type);
 
 
 	/**
@@ -60,7 +60,7 @@ public interface UseResidentMapper  extends BaseMapper<UseResidentPo>{
 	 * @param id
 	 * @return
 	 */
-	public long residentCount(@Param("criteria") String criteria);
+	public long residentCount(@Param("criteria") String criteria,@Param("type") String type);
 
 	/**
 	 * @param rwoBounds
@@ -107,8 +107,8 @@ public interface UseResidentMapper  extends BaseMapper<UseResidentPo>{
 	/**
 	 * 修改授权
 	 */
-	@Update("update use_resident set residentType =#{type} where id= #{id}")
-	public void updateCars(@Param("id") String id,@Param("type") String  type);
+	@Update("update use_resident set residentType =#{type},mobile=#{mobile},userName=#{userName},card=#{card},address=#{address} where id= #{id}")
+	public void updateCars(@Param("id") String id,@Param("type") String  type,@Param("mobile") String  mobile,@Param("userName") String  userName,@Param("card") String  card,@Param("address") String  address);
 
 
 

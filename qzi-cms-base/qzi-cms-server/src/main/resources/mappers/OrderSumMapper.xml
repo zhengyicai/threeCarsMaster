@@ -45,7 +45,7 @@
 
 
 	<select id="mouthfindAll" resultType="OrderSumVo">
-			SELECT count(1) as count1, DATE_FORMAT( createTime, "%Y-%m" ) as createTime1 ,sum(buyPrice) as buyPrice ,sum(sellPrice) as sellPrice FROM use_resident_order
+			SELECT count(1) as count1, DATE_FORMAT( createTime, "%Y-%m" ) as createTime1 ,round(sum(buyPrice),2) as buyPrice ,round(sum(sellPrice),2) as sellPrice FROM use_resident_order
 			<where>
 				1=1
 				<if test="model.wxId != null and model.wxId !=''">
@@ -63,7 +63,7 @@
 		</select>
 
 		<select id="mouthfindCount" resultType="long" parameterType="String">
-			SELECT count(*) from  ( SELECT DATE_FORMAT( createTime, "%Y-%m" ) as createTime ,sum(buyPrice) as buyPrice ,sum(sellPrice) as sellPrice FROM use_resident_order
+			SELECT count(*) from  ( SELECT DATE_FORMAT( createTime, "%Y-%m" ) as createTime ,round(sum(buyPrice),2) as buyPrice ,round(sum(sellPrice),2) as sellPrice FROM use_resident_order
 			<where>
 						1=1
 						<if test="model.wxId != null and model.wxId !=''">

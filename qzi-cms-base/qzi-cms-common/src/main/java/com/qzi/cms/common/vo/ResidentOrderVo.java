@@ -48,6 +48,16 @@ public class ResidentOrderVo {
     //显示失败的订单
     private String isError;
 
+    private String remark;
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     public String getIsError() {
         return isError;
     }

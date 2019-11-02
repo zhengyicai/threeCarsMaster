@@ -19,6 +19,16 @@ public class GoodsPo {
 
     private Date  updateTime;
 
+    private String remark;
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     public Date getUpdateTime() {
         return updateTime;
     }
